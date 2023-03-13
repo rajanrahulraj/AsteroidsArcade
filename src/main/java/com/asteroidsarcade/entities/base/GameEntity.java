@@ -1,4 +1,4 @@
-package com.asteroidsarcade.entities;
+package com.asteroidsarcade.entities.base;
 import com.asteroidsarcade.interfaces.Moveable;
 import javafx.scene.shape.Polygon;
 
@@ -16,16 +16,8 @@ public abstract class GameEntity implements Moveable {
             return entityShape;
         }
 
-        public void turn(){
-
-        }
-
-        public void turnLeft() {
-            this.entityShape.setRotate(this.entityShape.getRotate() - 5);
-        }
-
-        public void turnRight() {
-            this.entityShape.setRotate(this.entityShape.getRotate() + 5);
+        public void setVelocity(){
+            // To-Do
         }
 
         public void move() {
