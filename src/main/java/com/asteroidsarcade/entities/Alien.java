@@ -1,5 +1,7 @@
 package com.asteroidsarcade.entities;
 
-public class Alien extends SpaceShip{
+import com.asteroidsarcade.interfaces.Moveable;
+
+public class Alien extends SpaceShip implements Moveable{
 
 }
