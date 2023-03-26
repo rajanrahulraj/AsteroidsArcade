@@ -9,6 +9,10 @@ public class TurnableEntity extends GameEntity implements Turnable {
         super(polygon, x, y);
     }
 
+    public void setVelocity(){
+        super.setVelocity(velocityX, velocityX);
+    }
+
     public void turnLeft() {
         this.getEntityShape().setRotate(this.getEntityShape().getRotate() - 5);
     }
