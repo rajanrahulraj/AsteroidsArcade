@@ -107,6 +107,11 @@ public class HelloApplication extends Application {
 	                if(pressedKeys.getOrDefault(KeyCode.UP, false)) {
 	                	player.applyThrust();
 	                }
+			    
+			// (add by Marc) press space shoot bullet
+	                if (pressedKeys.getOrDefault(KeyCode.SPACE, false)) {
+	                	player.fire();
+	                }
 
 	                player.move();
 	            }
