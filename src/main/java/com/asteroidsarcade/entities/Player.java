@@ -57,11 +57,12 @@ public class Player extends SpaceShip implements Moveable, Turnable {
 
         this.movement = this.movement.add(changeX, changeY);
     }
-
-    public void fire() {
-    	
+  
+    // Add by Marc - fire calls bullet right, also needs life, I think this needs direction variable 
+    public Bullet fire() {
+    	return new Bullet(this.entityShape.getTranslateX(), this.entityShape.getTranslateY(), velocityX, velocityY);
     }
-
+	
     public void hyperspaceJump() {
     	
     }
