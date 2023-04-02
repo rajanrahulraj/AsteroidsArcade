@@ -11,6 +11,10 @@ import javafx.stage.Stage;
 
 import com.asteroidsarcade.entities.SpaceShip;
 import com.asteroidsarcade.entities.Player;
+import com.asteroidsarcade.entities.SmallAsteroids;
+import com.asteroidsarcade.entities.MediumAsteroids;
+import com.asteroidsarcade.entities.LargeAsteroids;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,10 +71,18 @@ public class HelloApplication extends Application {
 	        
 	        Player player = new Player();
 
+			SmallAsteroids smallAsteroid = new SmallAsteroids();
+			MediumAsteroids mediumAsteroid = new MediumAsteroids();
+			LargeAsteroids largeAsteroid = new LargeAsteroids();
+
 
 	        // add the player entity into the pane
 	        pane.getChildren().add(player.getEntityShape());
 	        
+			//adding test asteroids of all shapes (A)
+			pane.getChildren().add(smallAsteroid.getEntityShape());
+			pane.getChildren().add(mediumAsteroid.getEntityShape());
+			pane.getChildren().add(largeAsteroid.getEntityShape());
 
 	        Scene scene = new Scene(pane);
 	        stage.setTitle("Group 4: Asteroids Game!");
