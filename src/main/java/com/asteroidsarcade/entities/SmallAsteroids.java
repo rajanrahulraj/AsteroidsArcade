@@ -4,7 +4,7 @@ import com.asteroidsarcade.interfaces.Moveable;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Polygon;
 
-public class SmallAsteroids extends GameEntity implements Moveable {
+public class SmallAsteroids extends Asteroids {
     private Point2D location;
     private int numSplit; 
 
@@ -16,5 +16,6 @@ public class SmallAsteroids extends GameEntity implements Moveable {
 
         //number of splits => 0, because if it gets killed, it disappears
         this.numSplit = 0;
+        this.setVelocity(4);
     }
 }
