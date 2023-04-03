@@ -16,6 +16,6 @@ public class SmallAsteroids extends Asteroids {
 
         //number of splits => 0, because if it gets killed, it disappears
         this.numSplit = 0;
-        this.setVelocity(4);
+        this.applyThrust();
     }
 }
