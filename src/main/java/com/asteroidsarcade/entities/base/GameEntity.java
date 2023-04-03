@@ -1,56 +1,60 @@
 package com.asteroidsarcade.entities.base;
 
-import com.asteroidsarcade.interfaces.Moveable;
-import com.asteroidsarcade.main.HelloApplication;
-import com.asteroidsarcade.main.HelloApplication;
-
+import javafx.geometry.Point2D;
 import javafx.scene.shape.Polygon;
 
-public abstract class GameEntity implements Moveable {
 
-    public Polygon entityShape;
-    public double velocityX;
-    public double velocityY;
+
+public abstract class GameEntity {
+	private Point2D movement;
+    private Polygon entityShape;
 
     public GameEntity(Polygon polygon, int x, int y) {
         this.entityShape = polygon;
         this.entityShape.setTranslateX(x);
         this.entityShape.setTranslateY(y);
+        
+        this.movement = new Point2D(0, 0);
     }
 
     public Polygon getEntityShape() {
         return entityShape;
     }
 
-    public void setVelocity(double x, double y) {
-        this.velocityX = x;
-        this.velocityY = y;
+    public void turnLeft() {
+        this.entityShape.setRotate(this.entityShape.getRotate() - 5);
     }
 
+    public void turnRight() {
+        this.entityShape.setRotate(this.entityShape.getRotate() + 5);
+    }
+
+    
     public void move() {
-        double changeX = Math.cos(Math.toRadians(this.entityShape.getRotate()));
-        double changeY = Math.sin(Math.toRadians(this.entityShape.getRotate()));
-        entityShape.setTranslateX(entityShape.getTranslateX() + changeX);
-        entityShape.setTranslateY(entityShape.getTranslateY() + changeY);
-
-        // code below added by liaoliao.
-        // code below are used to set all entities stay within the screen.
-        if (this.entityShape.getTranslateX() < 0) {
-            this.entityShape.setTranslateX(this.entityShape.getTranslateX() + HelloApplication.WIDTH);
-        }
-
-        if (this.entityShape.getTranslateX() > HelloApplication.WIDTH) {
-            this.entityShape.setTranslateX(this.entityShape.getTranslateX() % HelloApplication.WIDTH);
-        }
-
-        if (this.entityShape.getTranslateY() < 0) {
-            this.entityShape.setTranslateY(this.entityShape.getTranslateY() + HelloApplication.HEIGHT);
-        }
-
-        if (this.entityShape.getTranslateY() > HelloApplication.HEIGHT) {
-            this.entityShape.setTranslateY(this.entityShape.getTranslateY() % HelloApplication.HEIGHT);
-        }
-        // code above added by liaoliao.
-
+        this.entityShape.setTranslateX(this.entityShape.getTranslateX() + this.movement.getX());
+        this.entityShape.setTranslateY(this.entityShape.getTranslateY() + this.movement.getY());
     }
+    
+    public void applyThrust() {
+    	double changeX = Math.cos(Math.toRadians(this.entityShape.getRotate()));
+        double changeY = Math.sin(Math.toRadians(this.entityShape.getRotate()));
+
+        changeX *= 0.05;
+        changeY *= 0.05;
+
+        this.movement = this.movement.add(changeX, changeY);
+    }
+    
+    // Setter
+    public void setMovement(Point2D x) {
+      this.movement = x;
+    }
+    
+    // getter
+    public Point2D getMovement() {
+    	return movement;
+    }
+    
+ 
+
 }
