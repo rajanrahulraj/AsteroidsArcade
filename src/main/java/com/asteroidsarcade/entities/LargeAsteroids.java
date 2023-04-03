@@ -4,19 +4,18 @@ import com.asteroidsarcade.interfaces.Moveable;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Polygon;
 
-public class LargeAsteroids extends Asteroids {
+public class SmallAsteroids extends Asteroids {
     private Point2D location;
     private int numSplit; 
 
-    public LargeAsteroids() {
-        //coordinates for the large asteroid
-        super(new Polygon(22, 8, 41, 0, 57, 16, 39, 26, 59, 42, 39, 67, 17, 59, 7, 68, -9, 51, -1, 32, -9, 18, 12, 0), 250, 250);
+    public SmallAsteroids() {
+        //coordinates for the small asteroid
+        super(new Polygon(6, 2, 10.25, 0, 14.25, 4, 9.75, 6.5, 14.75, 10.5, 9.75, 16.75, 4.25, 14.75, 1.75, 17, -2.25, 12.75, -0.25, 8, -2.25, 4.5, 2.75, 0), 380, 270);
 
         this.location = new Point2D(0, 0);
 
-        //number of splits => 2, because if it gets killed, it divides into two medium asteroids
-        this.numSplit = 2;
-        this.setVelocity(1);// Just a sample
+        //number of splits => 0, because if it gets killed, it disappears
+        this.numSplit = 0;
+        this.applyThrust();
     }
 }
-
