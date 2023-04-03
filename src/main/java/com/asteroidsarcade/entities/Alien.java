@@ -28,19 +28,19 @@ public class Alien extends SpaceShip {
     }
 
     // not sure if this is correct
-    @Override
-    public void move() {
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.0167), event -> {
-            double newX = this.getTranslateX() + this.velocityX;
-            double newY = this.getTranslateY() + this.velocityY;
-
-            this.setTranslateX(newX);
-            this.setTranslateY(newY);
-        }));
-        
-        timeline.setCycleCount(Animation.INDEFINITE); 
-
-    }
+//    @Override
+//    public void move() {
+//        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.0167), event -> {
+//            double newX = this.getTranslateX() + this.velocityX;
+//            double newY = this.getTranslateY() + this.velocityY;
+//
+//            this.setTranslateX(newX);
+//            this.setTranslateY(newY);
+//        }));
+//
+//        timeline.setCycleCount(Animation.INDEFINITE);
+//
+//    }
 
     public Bullet fire() {
         return new Bullet(this.entityShape.getTranslateX(), this.entityShape.getTranslateY(), velocityX, velocityY);
