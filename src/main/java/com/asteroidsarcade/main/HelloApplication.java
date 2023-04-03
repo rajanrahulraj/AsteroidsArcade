@@ -9,15 +9,17 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 
-import com.asteroidsarcade.entities.SpaceShip;
 import com.asteroidsarcade.entities.Player;
 import com.asteroidsarcade.entities.SmallAsteroids;
 import com.asteroidsarcade.entities.MediumAsteroids;
 import com.asteroidsarcade.entities.LargeAsteroids;
+import com.asteroidsarcade.entities.Bullet;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 
 public class HelloApplication extends Application {
@@ -28,7 +30,7 @@ public class HelloApplication extends Application {
 //        root.setPrefSize(600, 600);
 //
 //        player = new Player();
-//        player.setVelocity(new Point2D(1, 0));
+//        player.thrust(new Point2D(1, 0));
 //        addGameObject(player, 300, 300);
 //
 //        AnimationTimer timer = new AnimationTimer() {
@@ -69,7 +71,8 @@ public class HelloApplication extends Application {
 	        // Background color
 	        pane.setStyle("-fx-background-color: grey");
 	        
-	        Player player = new Player();
+	        Player player  = new Player(150, 100);
+	        
 
 			SmallAsteroids smallAsteroid = new SmallAsteroids();
 			MediumAsteroids mediumAsteroid = new MediumAsteroids();
@@ -102,7 +105,7 @@ public class HelloApplication extends Application {
 	        
 	        // control the keyboard
 	        new AnimationTimer() {
-
+	        	
 	            @Override
 	            public void handle(long now) {
 	            	// press left arrow
@@ -122,11 +125,25 @@ public class HelloApplication extends Application {
 			    
 			// (add by Marc) press space shoot bullet
 	                if (pressedKeys.getOrDefault(KeyCode.SPACE, false)) {
-	                	player.fire();
+	                	
+	                	
+	                    // we shoot
+	                    Bullet bullet = new Bullet((int) player.getEntityShape().getTranslateX(), (int) player.getEntityShape().getTranslateY());
+	                    bullet.getEntityShape().setRotate(player.getEntityShape().getRotate());
+	                    List<Bullet> bullets = new ArrayList<>();
+	                    bullets.add(bullet);
+	                    
+	                    bullet.applyThrust();
+	                    bullet.setMovement(bullet.getMovement().normalize().multiply(7));
+	                    
+	                    pane.getChildren().add(bullet.getEntityShape());
+	      
 	                }
 
 	                player.move();
+	     
 	            }
+	            
 	        }.start();
 
 		}
