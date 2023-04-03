@@ -9,7 +9,7 @@ public class Alien extends SpaceShip {
 
     public Point2D position;
     public double moveAngle;
-    public double velocity = 10;// pixels per second, not sure if this is right
+    public double velocity = 10;// pixels per second, maybe need to change
 
     public Alien() {
         super(new Polygon(0.0, 80.0, 20.0, 0.0, 60.0, 0.0, 80.0, 80.0, 60.0, 160.0, 20.0, 160.0), 0, 0);
@@ -31,5 +31,10 @@ public class Alien extends SpaceShip {
 
     public Bullet fire() {
         return new Bullet(this.entityShape.getTranslateX(), this.entityShape.getTranslateY(), velocityX, velocityY);
+    }
+
+    public void destoryed() {
+        entityShape=null;
+
     }
 }
