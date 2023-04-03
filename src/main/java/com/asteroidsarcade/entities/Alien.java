@@ -17,7 +17,13 @@ public class Alien extends SpaceShip {
     public Alien() {
     }
 
+    @Override
     public void move() {
+        this.entityShape.setTranslateX(this.entityShape.getTranslateX() + this.position.getX());
+        this.entityShape.setTranslateY(this.entityShape.getTranslateY() + this.position.getY());
+    }
 
+    public Bullet fire() {
+        return new Bullet(this.entityShape.getTranslateX(), this.entityShape.getTranslateY(), velocityX, velocityY);
     }
 }
