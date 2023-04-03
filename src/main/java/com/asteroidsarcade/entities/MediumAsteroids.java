@@ -4,9 +4,8 @@ import com.asteroidsarcade.interfaces.Moveable;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Polygon;
 
-public class MediumAsteroids extends GameEntity implements Moveable {
-    private Point2D location;
-    private int numSplit; 
+public class MediumAsteroids extends Asteroids {
+//    GameEntity already extends
 
     public MediumAsteroids() {
         //coordinates for the medium asteroid
@@ -16,5 +15,6 @@ public class MediumAsteroids extends GameEntity implements Moveable {
 
         //number of splits => 2, because if it gets killed, it divides into two small asteroids
         this.numSplit = 2;
+        this.setVelocity(1,2);
     }
 }
