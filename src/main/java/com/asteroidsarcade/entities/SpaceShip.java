@@ -14,6 +14,8 @@ public class SpaceShip extends TurnableEntity {
     }
 	// liaoliao add code above.
 	
+    
+    // commment by Rick: maybe this function need to be altered because Polygon(-5,-5,10,5,-5,5) refers only to the Player
     public SpaceShip(){
         super(new Polygon(-5,-5,10,5,-5,5), 150,100);
     }
