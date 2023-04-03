@@ -4,27 +4,37 @@ import javafx.geometry.Point2D;
 import com.asteroidsarcade.main.HelloApplication;
 
 
-import com.asteroidsarcade.entities.base.TurnableEntity;
 import com.asteroidsarcade.entities.base.GameEntity;
 
 import javafx.scene.shape.Polygon;
-import com.asteroidsarcade.interfaces.Moveable;
-import com.asteroidsarcade.interfaces.Turnable;
-import com.asteroidsarcade.entities.SpaceShip;
+
+
 
 // code below write by liaoliao
 
-public class Player extends SpaceShip implements Moveable, Turnable {
-	private Point2D movement;
+public class Player extends GameEntity {
 	
+	private Polygon entityShape;
+    private Point2D movement;
 	
-	public Player(){
-        super(new Polygon(-5, -5, 10, 0, -5, 5), 380,270);
-        this.movement = new Point2D(0, 0);
+
+    public Player(int x, int y) {
+        super(new Polygon(-5, -5, 10, 0, -5, 5), x, y);
+    }
+    
+    public Polygon getEntityShape() {
+        return entityShape;
+    }
+    
+    public void turnLeft() {
+        this.entityShape.setRotate(this.entityShape.getRotate() - 5);
+    }
+    
+    public void turnRight() {
+        this.entityShape.setRotate(this.entityShape.getRotate() + 5);
     }
 	
     
-    @Override
     public void move() {
         this.entityShape.setTranslateX(this.entityShape.getTranslateX() + this.movement.getX());
         this.entityShape.setTranslateY(this.entityShape.getTranslateY() + this.movement.getY());
@@ -48,6 +58,7 @@ public class Player extends SpaceShip implements Moveable, Turnable {
         
     }
     
+    @Override
     public void applyThrust() {
         double changeX = Math.cos(Math.toRadians(this.entityShape.getRotate()));
         double changeY = Math.sin(Math.toRadians(this.entityShape.getRotate()));
@@ -58,11 +69,7 @@ public class Player extends SpaceShip implements Moveable, Turnable {
         this.movement = this.movement.add(changeX, changeY);
     }
   
-    // Add by Marc - fire calls bullet right, also needs life, I think this needs direction variable 
-    public Bullet fire() {
-    	return new Bullet(this.entityShape.getTranslateX(), this.entityShape.getTranslateY(), velocityX, velocityY);
-    }
-	
+   
     public void hyperspaceJump() {
     	
     }
