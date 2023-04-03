@@ -13,6 +13,10 @@ public class Asteroids extends GameEntity {
     public Asteroids(Polygon polygon, int x, int y) {
         super(polygon, x, y);
     }
+
+    public void setVelocity(double velocity){
+        super.setVelocity(velocity, velocity);
+    }
     // Logic to move and rotate asteroids here.
     // Logic when asteroid "dies"
 }

@@ -15,6 +15,6 @@ public class MediumAsteroids extends Asteroids {
 
         //number of splits => 2, because if it gets killed, it divides into two small asteroids
         this.numSplit = 2;
-        this.setVelocity(1,2);
+        this.setVelocity(2);
     }
 }

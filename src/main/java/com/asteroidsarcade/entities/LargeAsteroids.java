@@ -16,7 +16,7 @@ public class LargeAsteroids extends Asteroids {
 
         //number of splits => 2, because if it gets killed, it divides into two medium asteroids
         this.numSplit = 2;
-        this.setVelocity(2,2);// Just a sample
+        this.setVelocity(1);// Just a sample
     }
 }
 
