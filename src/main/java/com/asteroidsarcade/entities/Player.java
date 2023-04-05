@@ -1,16 +1,12 @@
 package com.asteroidsarcade.entities;
 
 import javafx.geometry.Point2D;
-import com.asteroidsarcade.main.HelloApplication;
+import com.asteroidsarcade.main.AsteroidsGame;
 
-
-import com.asteroidsarcade.entities.base.TurnableEntity;
-import com.asteroidsarcade.entities.base.GameEntity;
 
 import javafx.scene.shape.Polygon;
 import com.asteroidsarcade.interfaces.Moveable;
 import com.asteroidsarcade.interfaces.Turnable;
-import com.asteroidsarcade.entities.SpaceShip;
 
 // code below write by liaoliao
 
@@ -31,19 +27,19 @@ public class Player extends SpaceShip implements Moveable, Turnable {
         
         // code below are used to set all entities stay within the screen.
         if (this.entityShape.getTranslateX() < 0) {
-            this.entityShape.setTranslateX(this.entityShape.getTranslateX() + HelloApplication.WIDTH);
+            this.entityShape.setTranslateX(this.entityShape.getTranslateX() + AsteroidsGame.WIDTH);
         }
 
-        if (this.entityShape.getTranslateX() > HelloApplication.WIDTH) {
-            this.entityShape.setTranslateX(this.entityShape.getTranslateX() % HelloApplication.WIDTH);
+        if (this.entityShape.getTranslateX() > AsteroidsGame.WIDTH) {
+            this.entityShape.setTranslateX(this.entityShape.getTranslateX() % AsteroidsGame.WIDTH);
         }
 
         if (this.entityShape.getTranslateY() < 0) {
-            this.entityShape.setTranslateY(this.entityShape.getTranslateY() + HelloApplication.HEIGHT);
+            this.entityShape.setTranslateY(this.entityShape.getTranslateY() + AsteroidsGame.HEIGHT);
         }
 
-        if (this.entityShape.getTranslateY() > HelloApplication.HEIGHT) {
-            this.entityShape.setTranslateY(this.entityShape.getTranslateY() % HelloApplication.HEIGHT);
+        if (this.entityShape.getTranslateY() > AsteroidsGame.HEIGHT) {
+            this.entityShape.setTranslateY(this.entityShape.getTranslateY() % AsteroidsGame.HEIGHT);
         }
         
     }
