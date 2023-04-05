@@ -4,6 +4,7 @@ import com.asteroidsarcade.interfaces.Moveable;
 import com.asteroidsarcade.main.AsteroidsGame;
 
 import javafx.scene.shape.Polygon;
+import javafx.geometry.Point2D;
 
 
 /**
@@ -16,6 +17,8 @@ public abstract class GameEntity implements Moveable {
      * The polygon shape of the game entity.
      */
     public Polygon entityShape;
+    
+    public Point2D movement;
 
     /**
      * The velocity in the x direction.
@@ -37,6 +40,8 @@ public abstract class GameEntity implements Moveable {
         this.entityShape = polygon;
         this.entityShape.setTranslateX(x);
         this.entityShape.setTranslateY(y);
+        
+        this.movement = new Point2D(0, 0);
     }
 
     /**
