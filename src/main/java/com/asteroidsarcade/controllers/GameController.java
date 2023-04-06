@@ -1,6 +1,7 @@
 package com.asteroidsarcade.controllers;
 
 import com.asteroidsarcade.entities.Player;
+import com.asteroidsarcade.entities.Alien;
 import com.asteroidsarcade.entities.Bullet;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -24,6 +25,7 @@ public class GameController {
     private Stage stage;
     private Scene scene;
     private Player player;
+    private Alien alien;
     List<Bullet> bullets = new ArrayList<>();
 
     public GameController(Pane pane, Stage stage) {
@@ -93,5 +95,10 @@ public class GameController {
         return this.player;
     }
     
+    public Alien addAlien() {
+        this.alien = new Alien();
+        this.pane.getChildren().add(alien.getEntityShape());
+        return this.alien;
+    }
     
 }

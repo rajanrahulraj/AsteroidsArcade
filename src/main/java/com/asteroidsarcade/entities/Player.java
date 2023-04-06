@@ -19,7 +19,6 @@ public class Player extends SpaceShip implements Moveable, Turnable {
 	
 	public Player(){
         super(new Polygon(-5, -5, 10, 0, -5, 5), 380,270);
-        
     }
 	
     

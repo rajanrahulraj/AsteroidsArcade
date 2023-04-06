@@ -37,6 +37,8 @@ public class AsteroidsGame extends Application {
 			//adding test asteroids of all shapes (A)
 			gameController.addAsteroids();
 
+			//adding an alien
+			gameController.addAlien();
 
 	        Scene scene = gameController.setScene();
 	        stage.setTitle("Group 4: Asteroids Game!");
