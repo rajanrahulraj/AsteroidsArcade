@@ -37,8 +37,10 @@ public class AsteroidsGame extends Application {
 			//adding test asteroids of all shapes (A)
 			gameController.addAsteroids();
 
+			//adding an alien
+			gameController.addAlien();
 
-	        Scene scene = gameController.setScene();
+	        Scene scene = gameController.getScene();
 	        stage.setTitle("Group 4: Asteroids Game!");
 	        stage.show();
 
@@ -60,6 +62,7 @@ public class AsteroidsGame extends Application {
 	            @Override
 	            public void handle(long nanosec) {
 					gameController.handleKyPressAction(pressedKeys);
+
 	            }
 	        }.start();
 

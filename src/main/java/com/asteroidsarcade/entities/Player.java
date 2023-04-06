@@ -1,22 +1,24 @@
 package com.asteroidsarcade.entities;
 
-import javafx.geometry.Point2D;
 import com.asteroidsarcade.main.AsteroidsGame;
 
 
 import javafx.scene.shape.Polygon;
-import com.asteroidsarcade.interfaces.Moveable;
-import com.asteroidsarcade.interfaces.Turnable;
 
 // code below write by liaoliao
 
-public class Player extends SpaceShip implements Moveable, Turnable {
-	private Point2D movement;
+public class Player extends SpaceShip{
+	
+	// use to reduce the speed after applyThrust
+	private double dragCoefficient = 0.01;
+    private int remainingLives;
+    private boolean isAlive;
+
 	
 	
 	public Player(){
         super(new Polygon(-5, -5, 10, 0, -5, 5), 380,270);
-        this.movement = new Point2D(0, 0);
+        this.remainingLives = 3;
     }
 	
     
@@ -24,6 +26,9 @@ public class Player extends SpaceShip implements Moveable, Turnable {
     public void move() {
         this.entityShape.setTranslateX(this.entityShape.getTranslateX() + this.movement.getX());
         this.entityShape.setTranslateY(this.entityShape.getTranslateY() + this.movement.getY());
+        
+     // use to reduce the speed after applyThrust
+        movement = movement.multiply(1 - dragCoefficient);
         
         // code below are used to set all entities stay within the screen.
         if (this.entityShape.getTranslateX() < 0) {
@@ -54,13 +59,17 @@ public class Player extends SpaceShip implements Moveable, Turnable {
         this.movement = this.movement.add(changeX, changeY);
     }
   
-    // Add by Marc - fire calls bullet right, also needs life, I think this needs direction variable 
-    public Bullet fire() {
-    	return new Bullet(this.entityShape.getTranslateX(), this.entityShape.getTranslateY(), velocityX, velocityY);
-    }
+    
+    
 	
     public void hyperspaceJump() {
     	
     }
-    
+
+    public void decreaseLife() {
+        this.remainingLives--;
+        if(this.remainingLives <= 0){
+
+        }
+    }
 }
