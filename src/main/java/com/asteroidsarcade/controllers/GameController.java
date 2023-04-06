@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.lang.Math;
 
 public class GameController {
 
@@ -52,7 +53,7 @@ public class GameController {
         Player player = addPlayer();
 
         //adding test asteroids of all shapes (A)
-        addAsteroids();
+        addAsteroids(1, 2, 1);
 
         //adding an alien
         addAlien();
@@ -117,6 +118,11 @@ public class GameController {
         this.player.move();
      // shooting
         bullets.forEach(bullet -> bullet.move());
+
+
+        this.asteroids.forEach(asteroid -> {
+        asteroid.move();
+    });
     }
 
     public void handleCollision(){
@@ -133,16 +139,32 @@ public class GameController {
         });
     }
     
-    public void addAsteroids(){
-        // TO-DO: Add condition to add asteroids based on level
+public void addAsteroids(int numSmallAsteroids, int numMediumAsteroids, int numLargeAsteroids) {
+    // TO-DO: Add condition to add asteroids based on level
 
+    for (int i = 0; i < numSmallAsteroids; i++) {
         SmallAsteroids smallAsteroid = new SmallAsteroids();
-        MediumAsteroids mediumAsteroid = new MediumAsteroids();
-        LargeAsteroids largeAsteroid = new LargeAsteroids();
-        this.pane.getChildren().add(smallAsteroid.getEntityShape());
-        this.pane.getChildren().add(mediumAsteroid.getEntityShape());
-        this.pane.getChildren().add(largeAsteroid.getEntityShape());
+        asteroids.add(smallAsteroid);
     }
+
+    for (int i = 0; i < numMediumAsteroids; i++) {
+        MediumAsteroids mediumAsteroid = new MediumAsteroids();
+        asteroids.add(mediumAsteroid);
+    }
+
+    for (int i = 0; i < numLargeAsteroids; i++) {
+        LargeAsteroids largeAsteroid = new LargeAsteroids();
+        asteroids.add(largeAsteroid);
+    }
+
+   // Generate a random angle between 0 and 360 degrees
+    // Move each asteroid at the random angle
+    this.asteroids.forEach(asteroid -> {
+        asteroid.setAngle(Math.random() * 360);
+        this.pane.getChildren().add(asteroid.getEntityShape());
+});
+}
+
 
 
     public Player addPlayer() {
