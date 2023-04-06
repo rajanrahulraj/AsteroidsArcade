@@ -1,24 +1,24 @@
 package com.asteroidsarcade.entities;
 
-import javafx.geometry.Point2D;
 import com.asteroidsarcade.main.AsteroidsGame;
 
 
 import javafx.scene.shape.Polygon;
-import com.asteroidsarcade.interfaces.Moveable;
-import com.asteroidsarcade.interfaces.Turnable;
-import com.asteroidsarcade.entities.base.GameEntity;
 
 // code below write by liaoliao
 
-public class Player extends SpaceShip implements Moveable, Turnable {
+public class Player extends SpaceShip{
 	
 	// use to reduce the speed after applyThrust
 	private double dragCoefficient = 0.01;
+    private int remainingLives;
+    private boolean isAlive;
+
 	
 	
 	public Player(){
         super(new Polygon(-5, -5, 10, 0, -5, 5), 380,270);
+        this.remainingLives = 3;
     }
 	
     
@@ -65,5 +65,11 @@ public class Player extends SpaceShip implements Moveable, Turnable {
     public void hyperspaceJump() {
     	
     }
-    
+
+    public void decreaseLife() {
+        this.remainingLives--;
+        if(this.remainingLives <= 0){
+
+        }
+    }
 }

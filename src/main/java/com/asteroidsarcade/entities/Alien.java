@@ -50,9 +50,6 @@ public class Alien extends SpaceShip {
 //
 //    }
 
-    public Bullet fire() {
-    
-    }
 
     public void destoryed() {
 

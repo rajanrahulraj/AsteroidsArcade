@@ -1,8 +1,6 @@
 package com.asteroidsarcade.controllers;
 
-import com.asteroidsarcade.entities.Player;
-import com.asteroidsarcade.entities.Alien;
-import com.asteroidsarcade.entities.Bullet;
+import com.asteroidsarcade.entities.*;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -10,9 +8,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import com.asteroidsarcade.entities.SmallAsteroids;
-import com.asteroidsarcade.entities.MediumAsteroids;
-import com.asteroidsarcade.entities.LargeAsteroids;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,19 +22,17 @@ public class GameController {
     private Player player;
     private Alien alien;
     List<Bullet> bullets = new ArrayList<>();
+    List<Asteroids> asteroids = new ArrayList<>();
 
     public GameController(Pane pane, Stage stage) {
         this.pane = pane;
         this.stage = stage;
+        SceneController sceneController = new SceneController(this.pane, this.stage);
+        this.scene = sceneController.setScene();
     }
 
-    public Scene setScene(){
-        Scene scene = new Scene(this.pane);
-        stage.setTitle("Group 4: Asteroids Game!");
-        stage.setScene(scene);
-        scene.setFill(Color.GREY);
-        stage.show();
-        return scene;
+    public Scene getScene(){
+        return this.scene;
     }
 
     public void handleKyPressAction(Map<KeyCode, Boolean> pressedKeys){
@@ -75,6 +68,20 @@ public class GameController {
         this.player.move();
      // shooting
         bullets.forEach(bullet -> bullet.move());
+    }
+
+    public void handleCollision(){
+        this.bullets.forEach(bullet -> {
+            if (bullet.hasCollided(this.player)){
+                player.decreaseLife();
+
+            }
+        });
+        this.asteroids.forEach(asteroid ->{
+            if(asteroid.hasCollided(this.player)){
+                player.decreaseLife();
+            }
+        });
     }
     
     public void addAsteroids(){

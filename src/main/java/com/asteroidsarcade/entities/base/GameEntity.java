@@ -5,6 +5,7 @@ import com.asteroidsarcade.main.AsteroidsGame;
 
 import javafx.scene.shape.Polygon;
 import javafx.geometry.Point2D;
+import javafx.scene.shape.Shape;
 
 
 /**
@@ -89,4 +90,10 @@ public abstract class GameEntity implements Moveable {
             this.entityShape.setTranslateY(this.entityShape.getTranslateY() % AsteroidsGame.HEIGHT);
         }
     }
+
+    public boolean hasCollided(GameEntity other) {
+        Shape collisionArea = Shape.intersect(this.entityShape, other.getEntityShape());
+        return collisionArea.getBoundsInLocal().getWidth() != -1;
+    }
+
 }
