@@ -1,10 +1,12 @@
 package com.asteroidsarcade.controllers;
 
 import com.asteroidsarcade.entities.*;
-import javafx.fxml.FXML;
+import com.asteroidsarcade.main.AsteroidsGame;
+import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -17,7 +19,9 @@ import java.util.Map;
 public class GameController {
 
     private Pane pane;
+    private Pane homePane;
     private Stage stage;
+    private Stage homeStage;
     private Scene scene;
     private Player player;
     private Alien alien;
@@ -25,17 +29,62 @@ public class GameController {
     List<Asteroids> asteroids = new ArrayList<>();
 
     public GameController(Pane pane, Stage stage) {
-        this.pane = pane;
-        this.stage = stage;
-        SceneController sceneController = new SceneController(this.pane, this.stage);
-        this.scene = sceneController.setScene();
+        this.homePane = pane;
+        this.pane = new Pane();
+        this.pane.setPrefSize(AsteroidsGame.WIDTH, AsteroidsGame.HEIGHT);
+        this.homeStage = stage;
+        this.homeStage.hide();
+        this.stage = new Stage();
+        this.scene = setGameScene();
+        this.stage.show();
+    }
+    public Scene setGameScene(){
+        this.pane.setBackground(new Background(new BackgroundFill(Color.GREY, null, null)));
+        this.scene = new Scene(this.pane);
+        this.stage.setTitle("Asteroids - Game");
+        this.stage.setScene(this.scene);
+        this.scene.setFill(Color.GREY);
+        return this.scene;
+    }
+
+    public void startGame(){
+        // add the player entity into the pane
+        Player player = addPlayer();
+
+        //adding test asteroids of all shapes (A)
+        addAsteroids();
+
+        //adding an alien
+        addAlien();
+
+
+//	      when press the keyboard, make the player move smoothly.
+        Map<KeyCode, Boolean> pressedKeys = new HashMap<>();
+
+        this.scene.setOnKeyPressed(event -> {
+            pressedKeys.put(event.getCode(), Boolean.TRUE);
+        });
+
+        this.scene.setOnKeyReleased(event -> {
+            pressedKeys.put(event.getCode(), Boolean.FALSE);
+        });
+        // control the keyboard
+        new AnimationTimer() {
+
+            @Override
+            public void handle(long nanosec) {
+                handleKeyPressAction(pressedKeys);
+
+            }
+        }.start();
     }
 
     public Scene getScene(){
         return this.scene;
     }
 
-    public void handleKyPressAction(Map<KeyCode, Boolean> pressedKeys){
+
+    public void handleKeyPressAction(Map<KeyCode, Boolean> pressedKeys){
         // press left arrow
         if(pressedKeys.getOrDefault(KeyCode.LEFT, false)) {
             this.player.turnLeft();
