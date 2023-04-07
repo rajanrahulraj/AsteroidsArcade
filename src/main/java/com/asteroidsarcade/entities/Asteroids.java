@@ -5,6 +5,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.shape.Polygon;
 import java.util.List;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 public class Asteroids extends GameEntity {
 
@@ -13,14 +14,13 @@ public class Asteroids extends GameEntity {
     private double angle;
     public double velocity;
 
-    public Asteroids(Polygon polygon, int x, int y, double velocity) {
+    public Asteroids(Polygon polygon, double x, double y, double velocity) {
         super(polygon, x, y);
         this.velocity = velocity;
         location = new Point2D(x, y);
     }
     
     // Logic to move and rotate asteroids here.
-
      public double getAngle() {
         return angle;
     }
@@ -33,8 +33,10 @@ public class Asteroids extends GameEntity {
         double radians = Math.toRadians(angle);
         double changeX = Math.cos(radians) * velocity;
         double changeY = Math.sin(radians) * velocity;
-        entityShape.setTranslateX(entityShape.getTranslateX() + changeX);
-        entityShape.setTranslateY(entityShape.getTranslateY() + changeY);
+        location = location.add(changeX, changeY);
+        entityShape.setTranslateX(location.getX());
+        entityShape.setTranslateY(location.getY());
+
 
         // Code below is used to ensure that all entities stay within the screen.
         if (this.entityShape.getTranslateX() < 0) {
@@ -54,14 +56,42 @@ public class Asteroids extends GameEntity {
         }
     }
 
-    // Logic when asteroid "dies"
     public void handleCollision(List<Bullet> bullets, List<Asteroids> asteroids, Player player, Pane pane) {
     // Remove bullets and asteroids that have collided
     bullets.removeIf(bullet -> {
         for (Asteroids asteroid : asteroids) {
             if (bullet.hasCollided(asteroid)) {
                 pane.getChildren().remove(bullet.getEntityShape());
+                // Divide large and medium asteroids into smaller ones
+                if (asteroid instanceof LargeAsteroids) {
+                    
+                    MediumAsteroids newAsteroid1 = new MediumAsteroids(asteroid.location.getX(), asteroid.location.getY(), velocity);
+                    MediumAsteroids newAsteroid2 = new MediumAsteroids(asteroid.location.getX(), asteroid.location.getY(), velocity);
+                    asteroids.add(newAsteroid1);
+                    asteroids.add(newAsteroid2);
+                    newAsteroid1.getEntityShape().setFill(Color.BLUE); // Set fill color of new asteroid 1 to blue
+                    newAsteroid2.getEntityShape().setFill(Color.BLUE); // Set fill color of new asteroid 2 to blue
+                    newAsteroid1.setAngle(Math.random() * 360);
+                    newAsteroid2.setAngle(Math.random() * 360);
+                    pane.getChildren().add(newAsteroid1.getEntityShape());
+                    pane.getChildren().add(newAsteroid2.getEntityShape());
+
+                } else if (asteroid instanceof MediumAsteroids) {
+
+                    SmallAsteroids newAsteroid1 = new SmallAsteroids(asteroid.location.getX(), asteroid.location.getY(), velocity);
+                    SmallAsteroids newAsteroid2 = new SmallAsteroids(asteroid.location.getX(), asteroid.location.getY(), velocity);
+                    asteroids.add(newAsteroid1);
+                    asteroids.add(newAsteroid2);
+                    newAsteroid1.getEntityShape().setFill(Color.BLUE); // Set fill color of new asteroid 1 to blue
+                    newAsteroid2.getEntityShape().setFill(Color.BLUE); // Set fill color of new asteroid 2 to blue
+                    newAsteroid1.setAngle(Math.random() * 360);
+                    newAsteroid2.setAngle(Math.random() * 360);
+                    pane.getChildren().add(newAsteroid1.getEntityShape());
+                    pane.getChildren().add(newAsteroid2.getEntityShape());
+                } 
+
                 pane.getChildren().remove(asteroid.getEntityShape());
+                asteroids.remove(asteroid);
                 return true;
             }
         }

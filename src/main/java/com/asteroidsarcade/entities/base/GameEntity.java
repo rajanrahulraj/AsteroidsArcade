@@ -37,7 +37,7 @@ public abstract class GameEntity implements Moveable {
      * @param x the starting x position of the game entity
      * @param y the starting y position of the game entity
      */
-    public GameEntity(Polygon polygon, int x, int y) {
+    public GameEntity(Polygon polygon, double x, double y) {
         this.entityShape = polygon;
         this.entityShape.setTranslateX(x);
         this.entityShape.setTranslateY(y);

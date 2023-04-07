@@ -53,7 +53,7 @@ public class GameController {
         Player player = addPlayer();
 
         //adding test asteroids of all shapes (A)
-        addAsteroids(1, 2, 1);
+        addAsteroids(2, 2, 2);
 
         //adding an alien
         addAlien();
