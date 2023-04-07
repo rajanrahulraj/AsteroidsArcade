@@ -72,4 +72,8 @@ public class Player extends SpaceShip{
 
         }
     }
+
+    public void increaseScore() {
+        //
+    }
 }

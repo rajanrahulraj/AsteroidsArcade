@@ -119,21 +119,22 @@ public class GameController {
      // shooting
         bullets.forEach(bullet -> bullet.move());
 
+        // Move each asteroid
+        asteroids.forEach(asteroid -> asteroid.move());
 
-        this.asteroids.forEach(asteroid -> {
-        asteroid.move();
-    });
+        // Check collisions for each asteroid
+        asteroids.forEach(asteroid -> asteroid.handleCollision(bullets, asteroids, player, pane));
     }
 
-    public void handleCollision(){
+    public void handleCollision() {
         this.bullets.forEach(bullet -> {
-            if (bullet.hasCollided(this.player)){
+            if (bullet.hasCollided(this.player)) {
                 player.decreaseLife();
-
             }
         });
-        this.asteroids.forEach(asteroid ->{
-            if(asteroid.hasCollided(this.player)){
+
+        this.asteroids.forEach(asteroid -> {
+            if (asteroid.hasCollided(this.player)) {
                 player.decreaseLife();
             }
         });
