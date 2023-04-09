@@ -21,16 +21,24 @@ import java.util.Random;
 //2. Alien must be generated randomly from the edge of screen.
 //3. The initial direction of each Alien is fixed, depends on the screen sides it generated, but Alien will change direction radomly from time to time.
 //4. The speed of Alien is fixed.
-//5. Alien must be able to fire a bullet.
+//5. Alien must be able to fire a bullet toward the player.
 //6. Alien must be able to be destroyed.
 //7. Alien will disappear permanently when it exits the screen.
 public class Alien extends SpaceShip {
     
+    public Boolean isAlive = true;
+    Random rand;
 
     public Alien() {
+        
+        super();
 
-        super(new Polygon(0,0, 0,7, -5,15, 15,15, 10,7, 10,0), 100,100);
-
+        this.rand = new Random();
+        this.entityShape = new Polygon(0,0, 0,7, -5,15, 15,15, 10,7, 10,0);
+        this.entityShape.setTranslateX(0);
+        this.entityShape.setTranslateY(600*rand.nextDouble());
+        
+        this.movement = new Point2D(0, 0);
         
     }
     
