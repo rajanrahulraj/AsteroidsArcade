@@ -26,40 +26,45 @@ import java.util.Random;
 //7. Alien will disappear permanently when it exits the screen.
 public class Alien extends SpaceShip {
     
-    public Boolean isAlive = true;
-    Random rand;
+    public Boolean isActive;
+    private int shootDelay;
+    private int shootCounter;
+    private int size;
 
     public Alien() {
         
         super();
 
-        this.rand = new Random();
         this.entityShape = new Polygon(0,0, 0,7, -5,15, 15,15, 10,7, 10,0);
-        this.entityShape.setTranslateX(0);
-        this.entityShape.setTranslateY(600*rand.nextDouble());
         
-        this.movement = new Point2D(0, 0);
+        this.entityShape.setTranslateX(0);
+        this.entityShape.setTranslateY(600*Math.random());
+        
+        this.velocityX = 2*(Math.random() - 0.5);
+        this.velocityY = 2*(Math.random() - 0.5);
+
+        this.isActive = true;
+
+        this.size = 30;
+        this.shootDelay = 50;
+        this.shootCounter = 0;
         
     }
     
 
-    // not sure if this is correct
-//    @Override
-//    public void move() {
-//        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.0167), event -> {
-//            double newX = this.getTranslateX() + this.velocityX;
-//            double newY = this.getTranslateY() + this.velocityY;
-//
-//            this.setTranslateX(newX);
-//            this.setTranslateY(newY);
-//        }));
-//
-//        timeline.setCycleCount(Animation.INDEFINITE);
-//
-//    }
+   @Override
+   public void move() {
+         this.entityShape.setTranslateX(this.entityShape.getTranslateX() + this.velocityX);
+         this.entityShape.setTranslateY(this.entityShape.getTranslateY() + this.velocityY);
+         
+         
+         
 
 
-    public void destoryed() {
+   }
+
+
+    public void fire() {
 
     }
 }
