@@ -103,7 +103,9 @@ public class GameController {
 
      // press space to shoot
         if (pressedKeys.getOrDefault(KeyCode.SPACE, false)){
-        	
+        	if (player.getIsUncollisionable()) {
+                return; // do nothing if player is invisible
+            }
             // When shooting the bullet in the same direction as the ship
         	Bullet bullet = new Bullet((int) player.getEntityShape().getTranslateX(),
                     (int) player.getEntityShape().getTranslateY());
