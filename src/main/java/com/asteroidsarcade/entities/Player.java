@@ -1,5 +1,9 @@
 package com.asteroidsarcade.entities;
 
+import java.util.List;
+import java.util.Random;
+
+import com.asteroidsarcade.entities.base.GameEntity;
 import com.asteroidsarcade.main.AsteroidsGame;
 
 import javafx.scene.shape.Polygon;
@@ -7,6 +11,7 @@ import javafx.scene.shape.Polygon;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 
@@ -17,12 +22,14 @@ public class Player extends SpaceShip{
 	// use to reduce the speed after applyThrust
 	private double dragCoefficient = 0.01;
     private int remainingLives;
+    private int remainHyperspaceJump;
 
 	private  boolean isUncollisionable = false;
 	
 	public Player(){
         super(new Polygon(-5, -5, 10, 0, -5, 5), 380,270);
         this.remainingLives = 3;
+        this.remainHyperspaceJump = 3;
     }
 	
     
@@ -63,12 +70,40 @@ public class Player extends SpaceShip{
         this.movement = this.movement.add(changeX, changeY);
     }
   
+
+   
     
-    
-	
-    public void hyperspaceJump() {
-    	
+    public void hyperspaceJump(List<GameEntity> enemies) {
+        if (this.remainHyperspaceJump > 0) {
+            boolean collided;
+            do {
+                setNewLocation();
+                collided = false;
+                // detect the new position didn't collied with enemies.
+                for (GameEntity enemy : enemies) {
+                    if (enemy.hasCollided(this)) {
+                        collided = true;
+                        break;
+                    }
+                }
+            } while (collided);
+
+            invisibility(Duration.seconds(3));
+            this.remainHyperspaceJump -= 1;
+        }
     }
+
+    
+    // set a random location
+    public void setNewLocation() {
+		Random r = new Random();
+		int hyperSpaceX = r.nextInt(AsteroidsGame.WIDTH - 50) + 50;
+		int hyperSpaceY = r.nextInt(AsteroidsGame.HEIGHT - 50) + 50;
+		
+		this.entityShape.setTranslateX(hyperSpaceX);
+		this.entityShape.setTranslateY(hyperSpaceY);
+	}
+    
 
     public void decreaseLife() {
     if (!isUncollisionable) {

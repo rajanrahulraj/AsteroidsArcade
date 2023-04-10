@@ -1,7 +1,10 @@
 package com.asteroidsarcade.controllers;
 
 import com.asteroidsarcade.entities.*;
+import com.asteroidsarcade.entities.base.GameEntity;
 import com.asteroidsarcade.main.AsteroidsGame;
+
+
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -89,7 +92,8 @@ public class GameController {
         return this.scene;
     }
 
-
+    // liao add the hyperspaceKeyPressed variable here, to set the H key press just once a time.
+    private boolean hyperspaceKeyPressed = false;
     public void handleKeyPressAction(Map<KeyCode, Boolean> pressedKeys){
         // press left arrow
         if(pressedKeys.getOrDefault(KeyCode.LEFT, false)) {
@@ -105,6 +109,17 @@ public class GameController {
         if(pressedKeys.getOrDefault(KeyCode.UP, false)) {
             this.player.applyThrust();
         }
+        
+        if (pressedKeys.getOrDefault(KeyCode.H, false)) {
+            if (!hyperspaceKeyPressed) {
+                this.player.hyperspaceJump(groupEnemies());
+                hyperspaceKeyPressed = true;
+            }
+        } else {
+            hyperspaceKeyPressed = false;
+        }
+        
+        
 
      // press space to shoot
         if (pressedKeys.getOrDefault(KeyCode.SPACE, false)){
@@ -188,5 +203,14 @@ public class GameController {
         this.pane.getChildren().add(alien.getEntityShape());
         return this.alien;
     }
+    
+    public List<GameEntity> groupEnemies() {
+    	List<GameEntity> enemies = new ArrayList<GameEntity>();
+    	enemies.addAll(asteroids);
+    	enemies.addAll(bullets);
+    	enemies.add(alien); 
+    	return enemies;
+    }
+
     
 }
