@@ -6,6 +6,7 @@ import com.asteroidsarcade.main.AsteroidsGame;
 import javafx.scene.shape.Polygon;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Shape;
+import javafx.scene.Node;
 
 
 /**
@@ -30,6 +31,9 @@ public abstract class GameEntity implements Moveable {
      * The velocity in the y direction.
      */
     public double velocityY;
+
+    public Node view;
+    public Boolean alive=true;
 
     /**
      * Constructor that creates a game entity with a specified polygon shape and starting position.
@@ -94,6 +98,18 @@ public abstract class GameEntity implements Moveable {
     public boolean hasCollided(GameEntity other) {
         Shape collisionArea = Shape.intersect(this.entityShape, other.getEntityShape());
         return collisionArea.getBoundsInLocal().getWidth() != -1;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+
+    public boolean isDead() {
+        return !alive;
     }
 
 }

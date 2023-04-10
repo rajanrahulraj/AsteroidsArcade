@@ -12,6 +12,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.shape.Polygon;
 import javafx.util.Duration;
 
+
 import java.util.Random;
 
 
@@ -26,7 +27,6 @@ import java.util.Random;
 //7. Alien will disappear permanently when it exits the screen.
 public class Alien extends SpaceShip {
     
-    public Boolean isActive;
     private int shootDelay;
     private int shootCounter;
     private int size;
@@ -42,8 +42,6 @@ public class Alien extends SpaceShip {
         
         this.velocityX = 2*(Math.random() - 0.5);
         this.velocityY = 2*(Math.random() - 0.5);
-
-        this.isActive = true;
 
         this.size = 30;
         this.shootDelay = 50;
@@ -64,7 +62,6 @@ public class Alien extends SpaceShip {
    }
 
 
-    public void fire() {
 
-    }
+
 }

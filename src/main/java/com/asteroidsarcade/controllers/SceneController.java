@@ -61,6 +61,8 @@ public class SceneController{
         createButtons();
         this.stage.show();
     }
+
+    
     private void createButtons() {
         createStartButton();
         createScoresButton();

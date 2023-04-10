@@ -29,6 +29,7 @@ public class GameController {
     List<Bullet> bullets = new ArrayList<>();
     List<Asteroids> asteroids = new ArrayList<>();
 
+
     public GameController(Pane pane, Stage stage) {
         this.homePane = pane;
         this.pane = new Pane();
@@ -39,6 +40,8 @@ public class GameController {
         this.scene = setGameScene();
         this.stage.show();
     }
+
+
     public Scene setGameScene(){
         this.pane.setBackground(new Background(new BackgroundFill(Color.GREY, null, null)));
         this.scene = new Scene(this.pane);
@@ -47,6 +50,7 @@ public class GameController {
         this.scene.setFill(Color.GREY);
         return this.scene;
     }
+
 
     public void startGame(){
         // add the player entity into the pane
@@ -59,7 +63,7 @@ public class GameController {
         addAlien();
 
 
-//	      when press the keyboard, make the player move smoothly.
+        //when press the keyboard, make the player move smoothly.
         Map<KeyCode, Boolean> pressedKeys = new HashMap<>();
 
         this.scene.setOnKeyPressed(event -> {
@@ -79,6 +83,7 @@ public class GameController {
             }
         }.start();
     }
+
 
     public Scene getScene(){
         return this.scene;
@@ -128,6 +133,7 @@ public class GameController {
         asteroids.forEach(asteroid -> asteroid.handleCollision(bullets, asteroids, player, pane));
     }
 
+
     public void handleCollision() {
         this.bullets.forEach(bullet -> {
             if (bullet.hasCollided(this.player)) {
@@ -142,32 +148,32 @@ public class GameController {
         });
     }
     
-public void addAsteroids(int numSmallAsteroids, int numMediumAsteroids, int numLargeAsteroids) {
-    // TO-DO: Add condition to add asteroids based on level
 
-    for (int i = 0; i < numSmallAsteroids; i++) {
-        SmallAsteroids smallAsteroid = new SmallAsteroids();
-        asteroids.add(smallAsteroid);
+    public void addAsteroids(int numSmallAsteroids, int numMediumAsteroids, int numLargeAsteroids) {
+        // TO-DO: Add condition to add asteroids based on level
+
+        for (int i = 0; i < numSmallAsteroids; i++) {
+            SmallAsteroids smallAsteroid = new SmallAsteroids();
+            asteroids.add(smallAsteroid);
+        }
+
+        for (int i = 0; i < numMediumAsteroids; i++) {
+            MediumAsteroids mediumAsteroid = new MediumAsteroids();
+            asteroids.add(mediumAsteroid);
+        }
+
+        for (int i = 0; i < numLargeAsteroids; i++) {
+            LargeAsteroids largeAsteroid = new LargeAsteroids();
+            asteroids.add(largeAsteroid);
+        }
+
+    // Generate a random angle between 0 and 360 degrees
+        // Move each asteroid at the random angle
+        this.asteroids.forEach(asteroid -> {
+            asteroid.setAngle(Math.random() * 360);
+            this.pane.getChildren().add(asteroid.getEntityShape());
+    });
     }
-
-    for (int i = 0; i < numMediumAsteroids; i++) {
-        MediumAsteroids mediumAsteroid = new MediumAsteroids();
-        asteroids.add(mediumAsteroid);
-    }
-
-    for (int i = 0; i < numLargeAsteroids; i++) {
-        LargeAsteroids largeAsteroid = new LargeAsteroids();
-        asteroids.add(largeAsteroid);
-    }
-
-   // Generate a random angle between 0 and 360 degrees
-    // Move each asteroid at the random angle
-    this.asteroids.forEach(asteroid -> {
-        asteroid.setAngle(Math.random() * 360);
-        this.pane.getChildren().add(asteroid.getEntityShape());
-});
-}
-
 
 
     public Player addPlayer() {
@@ -176,6 +182,7 @@ public void addAsteroids(int numSmallAsteroids, int numMediumAsteroids, int numL
         return this.player;
     }
     
+
     public Alien addAlien() {
         this.alien = new Alien();
         this.pane.getChildren().add(alien.getEntityShape());
