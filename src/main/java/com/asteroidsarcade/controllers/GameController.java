@@ -118,10 +118,8 @@ public class GameController {
         } else {
             hyperspaceKeyPressed = false;
         }
-        
-        
 
-     // press space to shoot
+        // press space to shoot
         if (pressedKeys.getOrDefault(KeyCode.SPACE, false)){
         	if (player.getIsUncollisionable()) {
                 return; // do nothing if player is invisible
@@ -138,7 +136,7 @@ public class GameController {
         }
 
         this.player.move();
-     // shooting
+        // shooting
         bullets.forEach(bullet -> bullet.move());
 
         // Move each asteroid
@@ -182,12 +180,12 @@ public class GameController {
             asteroids.add(largeAsteroid);
         }
 
-    // Generate a random angle between 0 and 360 degrees
+        // Generate a random angle between 0 and 360 degrees
         // Move each asteroid at the random angle
         this.asteroids.forEach(asteroid -> {
             asteroid.setAngle(Math.random() * 360);
             this.pane.getChildren().add(asteroid.getEntityShape());
-    });
+        });
     }
 
 

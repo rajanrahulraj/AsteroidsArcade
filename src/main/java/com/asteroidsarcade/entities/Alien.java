@@ -11,11 +11,11 @@ import javafx.animation.KeyFrame;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Polygon;
 import javafx.util.Duration;
+import javafx.animation.AnimationTimer;
 
-
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Random;
-
-
 
 // Alien requiments:
 //1. Alien must be in the shape of a saucer.
@@ -26,42 +26,61 @@ import java.util.Random;
 //6. Alien must be able to be destroyed.
 //7. Alien will disappear permanently when it exits the screen.
 public class Alien extends SpaceShip {
-    
-    private int shootDelay;
+
+    private int shootDelay;// milliseconds
     private int shootCounter;
     private int size;
+    List<Bullet> bullets = new ArrayList<>();
 
     public Alien() {
-        
+
         super();
 
-        this.entityShape = new Polygon(0,0, 0,7, -5,15, 15,15, 10,7, 10,0);
-        
+        this.entityShape = new Polygon(0, 0, 0, 7, -5, 15, 15, 15, 10, 7, 10, 0);
+
         this.entityShape.setTranslateX(0);
-        this.entityShape.setTranslateY(600*Math.random());
-        
-        this.velocityX = 2*(Math.random() - 0.5);
-        this.velocityY = 2*(Math.random() - 0.5);
+        this.entityShape.setTranslateY(600 * Math.random());
+
+        this.velocityX = 2 * (Math.random() - 0.5);
+        this.velocityY = 2 * (Math.random() - 0.5);
 
         this.size = 30;
         this.shootDelay = 50;
         this.shootCounter = 0;
-        
+
     }
-    
 
-   @Override
-   public void move() {
-         this.entityShape.setTranslateX(this.entityShape.getTranslateX() + this.velocityX);
-         this.entityShape.setTranslateY(this.entityShape.getTranslateY() + this.velocityY);
-         
-         
-         
+    @Override
+    public void move() {
 
+        if (!isAlive()) {
+            return;
+        }
 
-   }
+        this.entityShape.setTranslateX(this.entityShape.getTranslateX() + this.velocityX);
+        this.entityShape.setTranslateY(this.entityShape.getTranslateY() + this.velocityY);
 
+        shoot();
+    }
 
+    void shoot(){
+        new AnimationTimer() {
+        public void handle(long now) {
+        if (shootCounter == shootDelay) {
+            Bullet bullet = new Bullet((int) this.getEntityShape().getTranslateX(),(int) this.getEntityShape().getTranslateY()));
+            bullet.setVelocity(this.velocityX,this.velocityY);
+            bullet.setAlive(true);
 
+            bullet.getEntityShape().setRotate(Math.sinh(playrt.getEntityShape().getTranslateX()/player.getEntityShape().getTranslateX()));
+        	bullets.add(bullet);
+        	bullet.move();
+
+            pane.getChildren().add(bullet.getEntityShape());
+            bullets.forEach(bullet -> bullet.move());
+            shootCounter = 0;
+        }
+        shootCounter++;}
+        }.start();
+    }
 
 }
