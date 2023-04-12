@@ -19,6 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.lang.Math;
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class GameController {
 
@@ -30,6 +33,8 @@ public class GameController {
     private Player player;
     private Alien alien;
     List<Bullet> bullets = new ArrayList<>();
+    List<Bullet> alienBullets = new ArrayList<>();
+
     List<Asteroids> asteroids = new ArrayList<>();
 
 
@@ -62,7 +67,6 @@ public class GameController {
         //adding test asteroids of all shapes (A)
         addAsteroids(2, 2, 2);
 
-        // Alien alien= addAlien();
 
         //when press the keyboard, make the player move smoothly.
         Map<KeyCode, Boolean> pressedKeys = new HashMap<>();
@@ -85,15 +89,25 @@ public class GameController {
 
 
         AnimationTimer alienAnimation = new AnimationTimer() {
-            private long lastTime = 0L;
-            private long spawnInterval = 10_000_000_000L; // 10 seconds to generate a new alien
-            private long elapsedTime = 0L;
+            
+            private long lastTime = 0;
+            private long shootingInterval = 1_000_000_000L; 
             Alien alien= addAlien();
+            
             @Override
             public void handle(long now) {
+                
+                // alien shoot;
+                if (now - lastTime >= shootingInterval){
+                    lastTime = now;
+                    Bullet alienBullet = new Bullet((int) alien.getEntityShape().getTranslateX(),(int) alien.getEntityShape().getTranslateY());
+
+                    alienBullet.getEntityShape().setRotate(alien.getEntityShape().getRotate());
+                    alienBullets.add(alienBullet);
+                    pane.getChildren().add(alienBullet.getEntityShape());
+                }
+                alienBullets.forEach(alienBullet -> alienBullet.move());
                 alien.move();
-    
-    
             }
         };
         alienAnimation.start();

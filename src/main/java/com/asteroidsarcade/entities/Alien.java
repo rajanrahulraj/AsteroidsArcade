@@ -56,27 +56,7 @@ public class Alien extends SpaceShip {
         this.entityShape.setTranslateX(this.entityShape.getTranslateX() + this.velocityX);
         this.entityShape.setTranslateY(this.entityShape.getTranslateY() + this.velocityY);
 
-        // shoot();
     }
 
-    void shoot(){
-        new AnimationTimer() {
-        public void handle(long now) {
-        if (shootCounter == shootDelay) {
-            Bullet bullet = new Bullet((int) this.getEntityShape().getTranslateX(),(int) this.getEntityShape().getTranslateY()));
-            bullet.setVelocity(this.velocityX,this.velocityY);
-            bullet.setAlive(true);
-
-            bullet.getEntityShape().setRotate(Math.sinh(playrt.getEntityShape().getTranslateX()/player.getEntityShape().getTranslateX()));
-        	bullets.add(bullet);
-        	bullet.move();
-
-            pane.getChildren().add(bullet.getEntityShape());
-            bullets.forEach(bullet -> bullet.move());
-            shootCounter = 0;
-        }
-        shootCounter++;}
-        }.start();
-    }
 
 }
