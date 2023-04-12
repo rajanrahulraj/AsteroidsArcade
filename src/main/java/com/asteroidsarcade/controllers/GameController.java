@@ -62,9 +62,7 @@ public class GameController {
         //adding test asteroids of all shapes (A)
         addAsteroids(2, 2, 2);
 
-        //adding an alien
-        addAlien();
-
+        // Alien alien= addAlien();
 
         //when press the keyboard, make the player move smoothly.
         Map<KeyCode, Boolean> pressedKeys = new HashMap<>();
@@ -81,10 +79,24 @@ public class GameController {
 
             @Override
             public void handle(long nanosec) {
-                handleKeyPressAction(pressedKeys);
-
+                handleKeyPressAction(pressedKeys);// Rick suggests that codes about astroids should be removed from this function and relocated to a new AnimationTimer cuz astroids do not relate to the keyboard.
             }
         }.start();
+
+
+        AnimationTimer alienAnimation = new AnimationTimer() {
+            private long lastTime = 0L;
+            private long spawnInterval = 10_000_000_000L; // 10 seconds to generate a new alien
+            private long elapsedTime = 0L;
+            Alien alien= addAlien();
+            @Override
+            public void handle(long now) {
+                alien.move();
+    
+    
+            }
+        };
+        alienAnimation.start();
     }
 
 
@@ -210,5 +222,16 @@ public class GameController {
     	return enemies;
     }
 
-    
+
+    public void removeEntity(GameEntity entity) {
+        switch(entity.getType(entity)) {
+            case "alien":
+                this.pane.getChildren().remove(alien.getEntityShape());
+                break;
+            case "asteroid":
+                this.pane.getChildren().remove(entity.getEntityShape());
+                break;
+            // add more cases here
+        }
+    }
 }

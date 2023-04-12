@@ -112,4 +112,7 @@ public abstract class GameEntity implements Moveable {
         return !alive;
     }
 
+    public String getType(GameEntity entity) {
+        return entity.getClass().getSimpleName();
+    }
 }

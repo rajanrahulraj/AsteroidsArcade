@@ -41,8 +41,8 @@ public class Alien extends SpaceShip {
         this.entityShape.setTranslateX(0);
         this.entityShape.setTranslateY(600 * Math.random());
 
-        this.velocityX = 2 * (Math.random() - 0.5);
-        this.velocityY = 2 * (Math.random() - 0.5);
+        this.velocityX = 1;//Temporary parameters
+        this.velocityY = 0;//Temporary parameters
 
         this.size = 30;
         this.shootDelay = 50;
@@ -53,14 +53,10 @@ public class Alien extends SpaceShip {
     @Override
     public void move() {
 
-        if (!isAlive()) {
-            return;
-        }
-
         this.entityShape.setTranslateX(this.entityShape.getTranslateX() + this.velocityX);
         this.entityShape.setTranslateY(this.entityShape.getTranslateY() + this.velocityY);
 
-        shoot();
+        // shoot();
     }
 
     void shoot(){
