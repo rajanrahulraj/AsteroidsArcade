@@ -102,7 +102,7 @@ public class GameController {
                     lastTime = now;
                     Bullet alienBullet = new Bullet((int) alien.getEntityShape().getTranslateX(),(int) alien.getEntityShape().getTranslateY());
 
-                    alienBullet.getEntityShape().setRotate(alien.getEntityShape().getRotate());
+                    alienBullet.getEntityShape().setRotate(Math.atan((player.getEntityShape().getTranslateY() - alien.getEntityShape().getTranslateY()) / (player.getEntityShape().getTranslateX() - alien.getEntityShape().getTranslateX())) * 180 / Math.PI);
                     alienBullets.add(alienBullet);
                     pane.getChildren().add(alienBullet.getEntityShape());
                 }
