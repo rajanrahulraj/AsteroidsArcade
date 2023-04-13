@@ -97,16 +97,27 @@ public class GameController {
             @Override
             public void handle(long now) {
                 
-                // alien shoot;
                 if (now - lastTime >= shootingInterval){
                     lastTime = now;
-                    Bullet alienBullet = new Bullet((int) alien.getEntityShape().getTranslateX(),(int) alien.getEntityShape().getTranslateY());
+                    Bullet bullet = new Bullet((int) alien.getEntityShape().getTranslateX(),(int) alien.getEntityShape().getTranslateY());
 
-                    alienBullet.getEntityShape().setRotate(Math.atan((player.getEntityShape().getTranslateY() - alien.getEntityShape().getTranslateY()) / (player.getEntityShape().getTranslateX() - alien.getEntityShape().getTranslateX())) * 180 / Math.PI);
-                    alienBullets.add(alienBullet);
-                    pane.getChildren().add(alienBullet.getEntityShape());
+                    
+                    if (player.getEntityShape().getTranslateX() == alien.getEntityShape().getTranslateX()){
+                        bullet.getEntityShape().setRotate(90);
+                    }
+                    else if(player.getEntityShape().getTranslateX() > alien.getEntityShape().getTranslateX()){
+                        bullet.getEntityShape().setRotate(Math.atan((player.getEntityShape().getTranslateY() - alien.getEntityShape().getTranslateY()) / (player.getEntityShape().getTranslateX() - alien.getEntityShape().getTranslateX())) * 180 / Math.PI);
+                    }
+                    else if(player.getEntityShape().getTranslateX() < alien.getEntityShape().getTranslateX()){
+                        bullet.getEntityShape().setRotate(Math.atan((player.getEntityShape().getTranslateY() - alien.getEntityShape().getTranslateY()) / (player.getEntityShape().getTranslateX() - alien.getEntityShape().getTranslateX())) * 180 / Math.PI + 180);
+                    }
+                    
+                    
+                    bullets.add(bullet);
+                    pane.getChildren().add(bullet.getEntityShape());
+
                 }
-                alienBullets.forEach(alienBullet -> alienBullet.move());
+                bullets.forEach(bullet -> bullet.move());
                 alien.move();
             }
         };
