@@ -119,6 +119,10 @@ public class GameController {
                 }
                 bullets.forEach(bullet -> bullet.move());
                 alien.move();
+                if (alien.getEntityShape().getTranslateX()>500){
+                    removeEntity(alien);
+                    // removeEntity(bullet);
+                }
             }
         };
         alienAnimation.start();
@@ -249,14 +253,6 @@ public class GameController {
 
 
     public void removeEntity(GameEntity entity) {
-        switch(entity.getType(entity)) {
-            case "alien":
-                this.pane.getChildren().remove(alien.getEntityShape());
-                break;
-            case "asteroid":
-                this.pane.getChildren().remove(entity.getEntityShape());
-                break;
-            // add more cases here
-        }
+        this.pane.getChildren().remove(entity.getEntityShape());
     }
 }
