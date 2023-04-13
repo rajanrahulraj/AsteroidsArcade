@@ -87,6 +87,15 @@ public class SceneController{
     private void createScoresButton(){
         GameButton scoreButton = new GameButton("HIGH SCORES");
         AddMenuButtons(scoreButton);
+        
+        scoreButton.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                GameController gameController = new GameController(pane, stage);
+                gameController.GetHighScore();
+            }
+        });
     }
 
     private void createExitButton(){
