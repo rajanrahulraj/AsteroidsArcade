@@ -4,6 +4,19 @@ import com.asteroidsarcade.entities.*;
 import com.asteroidsarcade.entities.base.GameEntity;
 import com.asteroidsarcade.main.AsteroidsGame;
 
+// for reading writing highscore
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import javafx.scene.control.*;
+import java.io.File;
+import java.io.FileWriter;
+
+
+
+
 
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
@@ -32,6 +45,9 @@ public class GameController {
     private Scene scene;
     private Player player;
     private Alien alien;
+    // variables for scoring systems
+    private int score = 0;
+    private String highscore = "";
     List<Bullet> bullets = new ArrayList<>();
     List<Bullet> alienBullets = new ArrayList<>();
 
@@ -255,4 +271,72 @@ public class GameController {
     public void removeEntity(GameEntity entity) {
         this.pane.getChildren().remove(entity.getEntityShape());
     }
+    
+    // someone needs to put this method when the player dies as in if player life less than 0 then call this method
+    public void CheckScore() {
+    	
+    	System.out.println(highscore);
+    	// if highscore is set
+    	if (score > Integer.parseInt((highscore.split(":")[1]))) {
+    		// need javafx box that comes up to input in name
+    		// and takes the input as variable into name
+    		String name = ///need box java fx to input
+    		highscore = name + ":" + score;
+    		
+    		File scoreFile = new File("highscore.dat");
+    		if (!scoreFile.exists()) {
+    			try {
+    				scoreFile.createNewFile();
+    			}	catch (IOException e) {
+    				e.printStackTrace();
+    			}
+    		}
+    		FileWriter writeFile = null;
+    		BufferedWriter writer = null;
+    		try {
+    			writeFile = new FileWriter(scoreFile);
+    			writer = new BufferedWriter(writeFile);
+    			writer.write(this.highscore);
+    		}
+    		catch (Exception e) {
+    			//errors if file isnt found
+    		}
+    		finally {
+    			try {
+    				if (writer != null) 
+        				writer.close();
+    			}
+    				catch (Exception e) {}
+    			}
+    		}
+    }
+    
+    // highscore 
+    public String GetHighScore(){
+    	// format: Marc:100
+    	// same directory as class because no slash directory under
+    	FileReader readFile = null;
+    	BufferedReader reader = null;
+    	try {
+    		readFile = new FileReader("highscore.dat");
+    		reader = new BufferedReader(readFile);
+    		return reader.readLine();
+    	}
+    	catch (Exception e) {
+    		return "Anon:0";
+    	}
+    	finally {
+    		try {
+    			if (reader != null)
+    				reader.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    }
+    
+    
+    
+    
 }
