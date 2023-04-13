@@ -66,7 +66,6 @@ public class SceneController{
     private void createButtons() {
         createStartButton();
         createScoresButton();
-//        createCreditsButton();
         createExitButton();
     }
 

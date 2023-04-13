@@ -5,12 +5,10 @@ import com.asteroidsarcade.entities.base.GameEntity;
 import com.asteroidsarcade.main.AsteroidsGame;
 
 // for reading writing highscore
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import javafx.scene.control.*;
 import java.io.File;
 import java.io.FileWriter;
 
@@ -32,8 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.lang.Math;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 public class GameController {
@@ -44,7 +40,6 @@ public class GameController {
     private Stage homeStage;
     private Scene scene;
     private Player player;
-    private Alien alien;
     // variables for scoring systems
     private int score = 0;
     private String highscore = "";
@@ -52,6 +47,7 @@ public class GameController {
     List<Bullet> alienBullets = new ArrayList<>();
 
     List<Asteroids> asteroids = new ArrayList<>();
+    List<Alien> aliens = new ArrayList<>();
 
 
     public GameController(Pane pane, Stage stage) {
@@ -77,11 +73,7 @@ public class GameController {
 
 
     public void startGame(){
-        // add the player entity into the pane
-        Player player = addPlayer();
-
-        //adding test asteroids of all shapes (A)
-        addAsteroids(2, 2, 2);
+        addCharacters();
 
 
         //when press the keyboard, make the player move smoothly.
@@ -99,7 +91,7 @@ public class GameController {
 
             @Override
             public void handle(long nanosec) {
-                handleKeyPressAction(pressedKeys);// Rick suggests that codes about astroids should be removed from this function and relocated to a new AnimationTimer cuz astroids do not relate to the keyboard.
+                handleKeyPressAction(pressedKeys);
             }
         }.start();
 
@@ -107,38 +99,38 @@ public class GameController {
         AnimationTimer alienAnimation = new AnimationTimer() {
             
             private long lastTime = 0;
-            private long shootingInterval = 1_000_000_000L; 
-            Alien alien= addAlien();
+            private long shootingInterval = 1_000_000_000L;
             
             @Override
             public void handle(long now) {
-                
-                if (now - lastTime >= shootingInterval){
-                    lastTime = now;
-                    Bullet bullet = new Bullet((int) alien.getEntityShape().getTranslateX(),(int) alien.getEntityShape().getTranslateY());
+                aliens.forEach(alien -> {
+                    if (now - lastTime >= shootingInterval){
+                        lastTime = now;
+                        Bullet bullet = new Bullet((int) alien.getEntityShape().getTranslateX(),(int) alien.getEntityShape().getTranslateY());
 
-                    
-                    if (player.getEntityShape().getTranslateX() == alien.getEntityShape().getTranslateX()){
-                        bullet.getEntityShape().setRotate(90);
-                    }
-                    else if(player.getEntityShape().getTranslateX() > alien.getEntityShape().getTranslateX()){
-                        bullet.getEntityShape().setRotate(Math.atan((player.getEntityShape().getTranslateY() - alien.getEntityShape().getTranslateY()) / (player.getEntityShape().getTranslateX() - alien.getEntityShape().getTranslateX())) * 180 / Math.PI);
-                    }
-                    else if(player.getEntityShape().getTranslateX() < alien.getEntityShape().getTranslateX()){
-                        bullet.getEntityShape().setRotate(Math.atan((player.getEntityShape().getTranslateY() - alien.getEntityShape().getTranslateY()) / (player.getEntityShape().getTranslateX() - alien.getEntityShape().getTranslateX())) * 180 / Math.PI + 180);
-                    }
-                    
-                    
-                    bullets.add(bullet);
-                    pane.getChildren().add(bullet.getEntityShape());
 
-                }
-                bullets.forEach(bullet -> bullet.move());
-                alien.move();
-                if (alien.getEntityShape().getTranslateX()>500){
-                    removeEntity(alien);
-                    // removeEntity(bullet);
-                }
+                        if (player.getEntityShape().getTranslateX() == alien.getEntityShape().getTranslateX()){
+                            bullet.getEntityShape().setRotate(90);
+                        }
+                        else if(player.getEntityShape().getTranslateX() > alien.getEntityShape().getTranslateX()){
+                            bullet.getEntityShape().setRotate(Math.atan((player.getEntityShape().getTranslateY() - alien.getEntityShape().getTranslateY()) / (player.getEntityShape().getTranslateX() - alien.getEntityShape().getTranslateX())) * 180 / Math.PI);
+                        }
+                        else if(player.getEntityShape().getTranslateX() < alien.getEntityShape().getTranslateX()){
+                            bullet.getEntityShape().setRotate(Math.atan((player.getEntityShape().getTranslateY() - alien.getEntityShape().getTranslateY()) / (player.getEntityShape().getTranslateX() - alien.getEntityShape().getTranslateX())) * 180 / Math.PI + 180);
+                        }
+
+
+                        bullets.add(bullet);
+                        pane.getChildren().add(bullet.getEntityShape());
+
+                    }
+                    bullets.forEach(bullet -> bullet.move());
+                    alien.move();
+                    if (alien.getEntityShape().getTranslateX()>500){
+                        removeEntity(alien);
+                        // removeEntity(bullet);
+                    }
+                });
             }
         };
         alienAnimation.start();
@@ -149,6 +141,23 @@ public class GameController {
         return this.scene;
     }
 
+    public void addCharacters(){
+        // add the player entity into the pane
+        Player player = addPlayer();
+
+        //adding test asteroids of all shapes (A)
+        LevelController levelController = new LevelController();
+        List<GameEntity> enemies =  levelController.addEnemiesBasedOnLevel();
+
+        enemies.forEach(enemy ->{
+            if (enemy instanceof Asteroids){
+                this.asteroids.add((Asteroids) enemy);
+            } else if (enemy instanceof  Alien) {
+                this.aliens.add((Alien)enemy);
+            }
+            this.pane.getChildren().add(enemy.getEntityShape());
+        });
+    }
     // liao add the hyperspaceKeyPressed variable here, to set the H key press just once a time.
     private boolean hyperspaceKeyPressed = false;
     public void handleKeyPressAction(Map<KeyCode, Boolean> pressedKeys){
@@ -189,7 +198,7 @@ public class GameController {
         	bullets.add(bullet);
         	bullet.move();
             pane.getChildren().add(bullet.getEntityShape());
-            pressedKeys.clear();
+            pressedKeys.remove(KeyCode.SPACE);
         }
 
         this.player.move();
@@ -217,33 +226,6 @@ public class GameController {
             }
         });
     }
-    
-
-    public void addAsteroids(int numSmallAsteroids, int numMediumAsteroids, int numLargeAsteroids) {
-        // TO-DO: Add condition to add asteroids based on level
-
-        for (int i = 0; i < numSmallAsteroids; i++) {
-            SmallAsteroids smallAsteroid = new SmallAsteroids();
-            asteroids.add(smallAsteroid);
-        }
-
-        for (int i = 0; i < numMediumAsteroids; i++) {
-            MediumAsteroids mediumAsteroid = new MediumAsteroids();
-            asteroids.add(mediumAsteroid);
-        }
-
-        for (int i = 0; i < numLargeAsteroids; i++) {
-            LargeAsteroids largeAsteroid = new LargeAsteroids();
-            asteroids.add(largeAsteroid);
-        }
-
-        // Generate a random angle between 0 and 360 degrees
-        // Move each asteroid at the random angle
-        this.asteroids.forEach(asteroid -> {
-            asteroid.setAngle(Math.random() * 360);
-            this.pane.getChildren().add(asteroid.getEntityShape());
-        });
-    }
 
 
     public Player addPlayer() {
@@ -251,19 +233,13 @@ public class GameController {
         this.pane.getChildren().add(player.getEntityShape());
         return this.player;
     }
-    
 
-    public Alien addAlien() {
-        this.alien = new Alien();
-        this.pane.getChildren().add(alien.getEntityShape());
-        return this.alien;
-    }
     
     public List<GameEntity> groupEnemies() {
     	List<GameEntity> enemies = new ArrayList<GameEntity>();
     	enemies.addAll(asteroids);
     	enemies.addAll(bullets);
-    	enemies.add(alien); 
+    	enemies.addAll(aliens);
     	return enemies;
     }
 
@@ -280,7 +256,7 @@ public class GameController {
     	if (score > Integer.parseInt((highscore.split(":")[1]))) {
     		// need javafx box that comes up to input in name
     		// and takes the input as variable into name
-    		String name = ///need box java fx to input
+    		String name = "";
     		highscore = name + ":" + score;
     		
     		File scoreFile = new File("highscore.dat");
