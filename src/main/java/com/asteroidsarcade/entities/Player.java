@@ -22,13 +22,23 @@ public class Player extends SpaceShip{
 	// use to reduce the speed after applyThrust
 	private double dragCoefficient = 0.01;
     private int remainingLives;
+    public static int MAX_LIVES = 3;
+
+    public int getRemainingLives() {
+        return remainingLives;
+    }
+
+    public void setRemainingLives(int remainingLives) {
+        this.remainingLives = remainingLives;
+    }
+
     private int remainHyperspaceJump;
 
 	private  boolean isUncollisionable = false;
 	
 	public Player(){
         super(new Polygon(-5, -5, 10, 0, -5, 5), 380,270);
-        this.remainingLives = 3;
+        this.remainingLives = MAX_LIVES;
         this.remainHyperspaceJump = 3;
     }
 	

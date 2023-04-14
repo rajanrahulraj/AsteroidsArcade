@@ -11,7 +11,7 @@ public class LevelController {
 
 //    Base level characters denotes the count of characters on screen for the base level.
 //    Order of characters in array: Small Asteroid, Medium asteroid, Large asteroid, alien.
-    private int[] enemyCounts = new int[]{3,0,0,0};
+    private int[] enemyCounts = new int[]{3,1,1,1};
     private final int MAX_ASTEROID_COUNT = 20;
     private final int MAX_ALIEN_COUNT = 3;
 

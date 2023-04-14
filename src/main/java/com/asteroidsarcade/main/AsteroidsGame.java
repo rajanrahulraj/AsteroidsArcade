@@ -22,6 +22,7 @@ public class AsteroidsGame extends Application {
 		// this two variable are used to set all entities move on the screen.
 		public static int WIDTH = 900;
 	    public static int HEIGHT = 600;
+		public static SceneController sceneController;
 		
 		@Override
 	    public void start(Stage stage) throws Exception {
@@ -30,7 +31,7 @@ public class AsteroidsGame extends Application {
 	        // set the size of the screen.
 	        pane.setPrefSize(WIDTH, HEIGHT);
 
-			SceneController sceneController = new SceneController(pane, stage);
+			sceneController = new SceneController(pane, stage);
 			sceneController.setHomePageScene();
 			sceneController.showHomePage();
 

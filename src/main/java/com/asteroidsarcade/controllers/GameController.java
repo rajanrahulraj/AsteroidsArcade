@@ -1,5 +1,6 @@
 package com.asteroidsarcade.controllers;
 
+import com.asteroidsarcade.components.GeneralButton;
 import com.asteroidsarcade.entities.*;
 import com.asteroidsarcade.entities.base.GameEntity;
 import com.asteroidsarcade.main.AsteroidsGame;
@@ -17,9 +18,12 @@ import java.io.FileWriter;
 
 
 import javafx.animation.AnimationTimer;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
@@ -50,6 +54,8 @@ public class GameController {
     // variable to shoot every 0.5 seconds
     private Timer timer;
 
+    private LevelController levelController;
+
 
     public GameController(Pane pane, Stage stage) {
         this.homePane = pane;
@@ -75,10 +81,12 @@ public class GameController {
 
     public void startGame(){
         addCharacters();
+        displayGameStats();
+        displayMenuButton();
 
         //when press the keyboard, make the player move smoothly.
         Map<KeyCode, Boolean> pressedKeys = new HashMap<>();
-
+        this.scene.getRoot().requestFocus();
         this.scene.setOnKeyPressed(event -> {
             pressedKeys.put(event.getCode(), Boolean.TRUE);
         });
@@ -109,9 +117,6 @@ public class GameController {
         alienAnimation.start();
     }
 
-
-
-
     public Scene getScene(){
         return this.scene;
     }
@@ -121,7 +126,7 @@ public class GameController {
         Player player = addPlayer();
 
         //adding test asteroids of all shapes (A)
-        LevelController levelController = new LevelController();
+        levelController = new LevelController();
         List<GameEntity> enemies =  levelController.addEnemiesBasedOnLevel();
 
         enemies.forEach(enemy ->{
@@ -330,4 +335,58 @@ public class GameController {
         }
     }
 
+    private void displayGameStats(){
+        int gameStatBegin_X = 20;
+        int gameStatBegin_Y = 20;
+        Label scoreLabel = displayScore(gameStatBegin_X, gameStatBegin_Y);
+        Label levelLabel = displayLevel(gameStatBegin_X, scoreLabel.getTranslateY() + 40);
+        Label lifeLabel = displayLife(gameStatBegin_X, levelLabel.getTranslateY() + 40);
+        List<Label> labels = new ArrayList<>();
+        labels.add(scoreLabel);
+        labels.add(levelLabel);
+        labels.add(lifeLabel);
+        this.pane.getChildren().addAll(labels);
+    }
+    private Label displayScore(double position_x, double position_y) {
+        Label scoreLabel = new Label("Score: " + score);
+        scoreLabel.setTranslateX(position_x);
+        scoreLabel.setTranslateY(position_y);
+        scoreLabel.setTextFill(Color.WHITE);
+        scoreLabel.setFont(Font.font(30));
+        scoreLabel.setVisible(true);
+        return scoreLabel;
+    }
+    private Label displayLevel(double position_x, double position_y) {
+        Label levelLabel = new Label("Level: " + this.levelController.getLevel());
+        levelLabel.setTranslateX(position_x);
+        levelLabel.setTranslateY(position_y);
+        levelLabel.setTextFill(Color.WHITE);
+        levelLabel.setFont(Font.font(30));
+        levelLabel.setVisible(true);
+        return levelLabel;
+    }
+    private Label displayLife(double position_x, double position_y){
+        Label lifeLabel = new Label("Life: " + this.player.getRemainingLives());
+        lifeLabel.setTranslateX(position_x);
+        lifeLabel.setTranslateY(position_y);
+        lifeLabel.setTextFill(Color.WHITE);
+        lifeLabel.setFont(Font.font(30));
+        lifeLabel.setVisible(true);
+        return lifeLabel;
+    }
+
+    private void displayMenuButton(){
+        GeneralButton mainMenuButton = new GeneralButton("Main Menu");
+        mainMenuButton.setLayoutX(AsteroidsGame.WIDTH - 170);
+        mainMenuButton.setLayoutY(20);
+        this.pane.getChildren().add(mainMenuButton);
+        mainMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+//                TODO: save score when user navigates to main menu.
+                AsteroidsGame.sceneController.toggleStageView(stage, homeStage);
+//                stage.close();
+            }
+        });
+    }
 }

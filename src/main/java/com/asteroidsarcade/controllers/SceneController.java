@@ -6,10 +6,16 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import com.asteroidsarcade.components.GameButton;
+import javafx.scene.control.Label;
+import javafx.scene.effect.InnerShadow;
+import javafx.scene.effect.Reflection;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -19,6 +25,7 @@ public class SceneController{
     private Pane pane;
     private Stage stage;
     private Scene scene;
+    private SceneController sceneController;
 
     List<GameButton> menuButtons;
 
@@ -28,6 +35,7 @@ public class SceneController{
     public SceneController(Pane pane, Stage stage) {
         this.pane = pane;
         this.stage = stage;
+        sceneController = this;
     }
 
     public void toggleStageView(Stage hideStage, Stage showStage){
@@ -58,11 +66,26 @@ public class SceneController{
 
     public void showHomePage(){
         menuButtons = new ArrayList<>();
+        displayGameTitle();
         createButtons();
         this.stage.show();
     }
 
-    
+    private void displayGameTitle(){
+        InnerShadow is = new InnerShadow();
+        is.setOffsetX(4.0f);
+        is.setOffsetY(4.0f);
+
+        Text t = new Text();
+        t.setEffect(is);
+        t.setX(AsteroidsGame.WIDTH/2 -150);
+        t.setY(100);
+        t.setText("Asteroids");
+        t.setFill(Color.GREY);
+        t.setFont(Font.font(null, FontWeight.BOLD, 80));
+        
+        this.pane.getChildren().add(t);
+    }
     private void createButtons() {
         createStartButton();
         createScoresButton();
