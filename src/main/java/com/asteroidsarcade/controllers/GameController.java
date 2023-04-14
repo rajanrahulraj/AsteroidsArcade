@@ -43,6 +43,8 @@ public class GameController {
     // variables for scoring systems
     private int score = 0;
     private String highscore = "";
+    // variable to shoot every 0.5 seconds
+    private Timer timer;
     List<Bullet> bullets = new ArrayList<>();
     List<Bullet> alienBullets = new ArrayList<>();
 
@@ -73,11 +75,15 @@ public class GameController {
 
 
     public void startGame(){
+<<<<<<< HEAD
         // add the player entity into the pane
         Player player = addPlayer();
 
-        //adding test asteroids of all shapes (A)
+        // adding test asteroids of all shapes (A)
         addAsteroids(2, 2, 2);
+=======
+        addCharacters();
+>>>>>>> 4e2cdcbe87bce38aa024e700732bbec031a400bc
 
         // adding alien entity to the pane
         Alien alien = addAlien();
@@ -100,7 +106,12 @@ public class GameController {
 
             @Override
             public void handle(long nanosec) {
-                handleKeyPressAction(pressedKeys);// Rick suggests that codes about astroids should be removed from this function and relocated to a new AnimationTimer cuz astroids do not relate to the keyboard.
+<<<<<<< HEAD
+                handleKeyPressAction(pressedKeys);// Rick suggests that codes about astroids should be removed from this function and relocated to a new AnimationTimer cuz astroids do not relate to the keyboard. 
+                //👍
+=======
+                handleKeyPressAction(pressedKeys);
+>>>>>>> 4e2cdcbe87bce38aa024e700732bbec031a400bc
             }
         }.start();
         
@@ -108,41 +119,58 @@ public class GameController {
         new AnimationTimer() {
             
             private long lastTime = 0;
+<<<<<<< HEAD
             private long shootingInterval = 1_000_000_000L; 
-            Alien alien= addAlien();
+
+            @Override
+            public void handle(long now) {
+                alienMovement(lastTime, shootingInterval, now);
+=======
+            private long shootingInterval = 1_000_000_000L;
             
             @Override
             public void handle(long now) {
-                
-                if (now - lastTime >= shootingInterval){
-                    lastTime = now;
-                    Bullet bullet = new Bullet((int) alien.getEntityShape().getTranslateX(),(int) alien.getEntityShape().getTranslateY());
+                aliens.forEach(alien -> {
+                    if (now - lastTime >= shootingInterval){
+                        lastTime = now;
+                        Bullet bullet = new Bullet((int) alien.getEntityShape().getTranslateX(),(int) alien.getEntityShape().getTranslateY());
 
-                    
-                    if (player.getEntityShape().getTranslateX() == alien.getEntityShape().getTranslateX()){
-                        bullet.getEntityShape().setRotate(90);
-                    }
-                    else if(player.getEntityShape().getTranslateX() > alien.getEntityShape().getTranslateX()){
-                        bullet.getEntityShape().setRotate(Math.atan((player.getEntityShape().getTranslateY() - alien.getEntityShape().getTranslateY()) / (player.getEntityShape().getTranslateX() - alien.getEntityShape().getTranslateX())) * 180 / Math.PI);
-                    }
-                    else if(player.getEntityShape().getTranslateX() < alien.getEntityShape().getTranslateX()){
-                        bullet.getEntityShape().setRotate(Math.atan((player.getEntityShape().getTranslateY() - alien.getEntityShape().getTranslateY()) / (player.getEntityShape().getTranslateX() - alien.getEntityShape().getTranslateX())) * 180 / Math.PI + 180);
-                    }
-                    
-                    
-                    bullets.add(bullet);
-                    pane.getChildren().add(bullet.getEntityShape());
 
-                }
-                bullets.forEach(bullet -> bullet.move());
-                alien.move();
-                if (alien.getEntityShape().getTranslateX()>500){
-                    removeEntity(alien);
-                    // removeEntity(bullet);
-                }
+                        if (player.getEntityShape().getTranslateX() == alien.getEntityShape().getTranslateX()){
+                            bullet.getEntityShape().setRotate(90);
+                        }
+                        else if(player.getEntityShape().getTranslateX() > alien.getEntityShape().getTranslateX()){
+                            bullet.getEntityShape().setRotate(Math.atan((player.getEntityShape().getTranslateY() - alien.getEntityShape().getTranslateY()) / (player.getEntityShape().getTranslateX() - alien.getEntityShape().getTranslateX())) * 180 / Math.PI);
+                        }
+                        else if(player.getEntityShape().getTranslateX() < alien.getEntityShape().getTranslateX()){
+                            bullet.getEntityShape().setRotate(Math.atan((player.getEntityShape().getTranslateY() - alien.getEntityShape().getTranslateY()) / (player.getEntityShape().getTranslateX() - alien.getEntityShape().getTranslateX())) * 180 / Math.PI + 180);
+                        }
+
+
+                        bullets.add(bullet);
+                        pane.getChildren().add(bullet.getEntityShape());
+
+                    }
+                    bullets.forEach(bullet -> bullet.move());
+                    alien.move();
+                    if (alien.getEntityShape().getTranslateX()>500){
+                        removeEntity(alien);
+                        // removeEntity(bullet);
+                    }
+                });
+>>>>>>> 4e2cdcbe87bce38aa024e700732bbec031a400bc
             }
-        };
-        alienAnimation.start();
+        }.start();
+}
+
+    // method that checks if the entity is on the screen (A)
+    private boolean isOnScreen(GameEntity ge) {
+        System.out.println("Alien position: (" + alien.getEntityShape().getTranslateX() + ", " + alien.getEntityShape().getTranslateY() + ")");
+        if (ge.getEntityShape().getTranslateX() < AsteroidsGame.WIDTH && ge.getEntityShape().getTranslateY() < AsteroidsGame.HEIGHT) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
