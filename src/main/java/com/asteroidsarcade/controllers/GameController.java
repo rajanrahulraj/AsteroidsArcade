@@ -18,17 +18,16 @@ import java.io.FileWriter;
 
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.lang.Math;
 
 
@@ -48,6 +47,8 @@ public class GameController {
 
     List<Asteroids> asteroids = new ArrayList<>();
     List<Alien> aliens = new ArrayList<>();
+    // variable to shoot every 0.5 seconds
+    private Timer timer;
 
 
     public GameController(Pane pane, Stage stage) {
@@ -74,7 +75,6 @@ public class GameController {
 
     public void startGame(){
         addCharacters();
-
 
         //when press the keyboard, make the player move smoothly.
         Map<KeyCode, Boolean> pressedKeys = new HashMap<>();
@@ -103,38 +103,13 @@ public class GameController {
             
             @Override
             public void handle(long now) {
-                aliens.forEach(alien -> {
-                    if (now - lastTime >= shootingInterval){
-                        lastTime = now;
-                        Bullet bullet = new Bullet((int) alien.getEntityShape().getTranslateX(),(int) alien.getEntityShape().getTranslateY());
-
-
-                        if (player.getEntityShape().getTranslateX() == alien.getEntityShape().getTranslateX()){
-                            bullet.getEntityShape().setRotate(90);
-                        }
-                        else if(player.getEntityShape().getTranslateX() > alien.getEntityShape().getTranslateX()){
-                            bullet.getEntityShape().setRotate(Math.atan((player.getEntityShape().getTranslateY() - alien.getEntityShape().getTranslateY()) / (player.getEntityShape().getTranslateX() - alien.getEntityShape().getTranslateX())) * 180 / Math.PI);
-                        }
-                        else if(player.getEntityShape().getTranslateX() < alien.getEntityShape().getTranslateX()){
-                            bullet.getEntityShape().setRotate(Math.atan((player.getEntityShape().getTranslateY() - alien.getEntityShape().getTranslateY()) / (player.getEntityShape().getTranslateX() - alien.getEntityShape().getTranslateX())) * 180 / Math.PI + 180);
-                        }
-
-
-                        bullets.add(bullet);
-                        pane.getChildren().add(bullet.getEntityShape());
-
-                    }
-                    bullets.forEach(bullet -> bullet.move());
-                    alien.move();
-                    if (alien.getEntityShape().getTranslateX()>500){
-                        removeEntity(alien);
-                        // removeEntity(bullet);
-                    }
-                });
+                alienMovement(lastTime, shootingInterval, now);
             }
         };
         alienAnimation.start();
     }
+
+
 
 
     public Scene getScene(){
@@ -212,6 +187,40 @@ public class GameController {
         asteroids.forEach(asteroid -> asteroid.handleCollision(bullets, asteroids, player, pane));
     }
 
+    public void alienMovement(long lastTime, long shootingInterval, long now) {
+        for (Alien alien : this.aliens){
+            alien.move();
+
+            if (isOnScreen(alien) && (now - lastTime >= shootingInterval)) {
+                lastTime = now;
+
+                Bullet bullet = new Bullet((int) alien.getEntityShape().getTranslateX(),(int) alien.getEntityShape().getTranslateY());
+
+                if (player.getEntityShape().getTranslateX() == alien.getEntityShape().getTranslateX()){
+                    bullet.getEntityShape().setRotate(90);
+                }
+                else if(player.getEntityShape().getTranslateX() > alien.getEntityShape().getTranslateX()){
+                    bullet.getEntityShape().setRotate(Math.atan((player.getEntityShape().getTranslateY() - alien.getEntityShape().getTranslateY()) / (player.getEntityShape().getTranslateX() - alien.getEntityShape().getTranslateX())) * 180 / Math.PI);
+                }
+                else if(player.getEntityShape().getTranslateX() < alien.getEntityShape().getTranslateX()){
+                    bullet.getEntityShape().setRotate(Math.atan((player.getEntityShape().getTranslateY() - alien.getEntityShape().getTranslateY()) / (player.getEntityShape().getTranslateX() - alien.getEntityShape().getTranslateX())) * 180 / Math.PI + 180);
+                }
+
+                bullets.add(bullet);
+                pane.getChildren().add(bullet.getEntityShape());
+
+                bullet.move();
+
+                if (!isOnScreen(bullet)) {
+                    pane.getChildren().remove(bullet.getEntityShape());
+                    bullets.remove(bullet);
+                }
+
+            } else {
+                removeEntity(alien);
+            }
+        }
+    }
 
     public void handleCollision() {
         this.bullets.forEach(bullet -> {
@@ -311,8 +320,14 @@ public class GameController {
 			}
     	}
     }
-    
-    
-    
-    
+
+    private boolean isOnScreen(GameEntity ge) {
+        System.out.println("Character position: (" + ge.getEntityShape().getTranslateX() + ", " + ge.getEntityShape().getTranslateY() + ")");
+        if (ge.getEntityShape().getTranslateX() < AsteroidsGame.WIDTH && ge.getEntityShape().getTranslateY() < AsteroidsGame.HEIGHT) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
