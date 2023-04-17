@@ -2,11 +2,14 @@ package com.asteroidsarcade.config;
 
 public class AppConstants {
         public static final int DEFAULT_LARGE_ASTEROIDS_COUNT = 3;
-        public static final int DEFAULT_MEDIUM_ASTEROIDS_COUNT = 1;
-        public static final int DEFAULT_SMALL_ASTEROIDS_COUNT = 0;
+        public static final int DEFAULT_MEDIUM_ASTEROIDS_COUNT = 0;
+        public static final int DEFAULT_SMALL_ASTEROIDS_COUNT = 1;
         public static final int DEFAULT_ALIEN_COUNT = 0;
         public static final int MAX_ASTEROID_COUNT = 20;
         public static final int MAX_ALIEN_COUNT = 3;
+
+        public static final int MAX_BULLET_FREQUENCY = 5; //  bullets per second
+        public static final int BULLET_LIFE_TIME = 1500; //1.5 seconds life time for bullets
 
         public enum Points {
 
@@ -25,5 +28,5 @@ public class AppConstants {
                 }
 
         }
-        public static final int LEVEL_THRESHOLD = 50;
+        public static final int LEVEL_THRESHOLD = 100;
 }
