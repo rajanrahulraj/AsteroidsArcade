@@ -89,6 +89,7 @@ public class SceneController{
     private void createButtons() {
         createStartButton();
         createScoresButton();
+        createResetScoresButton();
         createExitButton();
     }
 
@@ -106,20 +107,36 @@ public class SceneController{
         });
     }
 
+    
+    
+    
     private void createScoresButton(){
-        GameButton scoreButton = new GameButton("HIGH SCORES");
-        AddMenuButtons(scoreButton);
-        
-        scoreButton.setOnAction(new EventHandler<ActionEvent>() {
+    	   GameButton scoreButton = new GameButton("HIGH SCORES");
+    	   AddMenuButtons(scoreButton);
 
-            @Override
-            public void handle(ActionEvent event) {
-                GameController gameController = new GameController(pane, stage);
-                gameController.GetHighScore();
-            }
-        });
-    }
+	    	scoreButton.setOnAction(new EventHandler<ActionEvent>() {
+	            @Override
+	            public void handle(ActionEvent event) {
+	                GameController gameController = new GameController(pane, stage);
+	                gameController.displayHighScore();
+	            }
+	        });
+    	}
 
+    private void createResetScoresButton(){
+ 	   GameButton scoreButton = new GameButton("RESET SCORE");
+ 	   AddMenuButtons(scoreButton);
+
+	    	scoreButton.setOnAction(new EventHandler<ActionEvent>() {
+	            @Override
+	            public void handle(ActionEvent event) {
+	                GameController gameController = new GameController(pane, stage);
+	                gameController.resetHighScore();
+	            }
+	        });
+ 	}
+    
+    
     private void createExitButton(){
         GameButton exitButton = new GameButton("EXIT");
         AddMenuButtons(exitButton);
