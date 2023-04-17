@@ -4,6 +4,7 @@ import com.asteroidsarcade.components.GeneralButton;
 import com.asteroidsarcade.entities.*;
 import com.asteroidsarcade.entities.base.GameEntity;
 import com.asteroidsarcade.main.AsteroidsGame;
+import static com.asteroidsarcade.config.AppConstants.*;
 
 // for reading writing highscore
 import java.io.FileReader;
@@ -18,7 +19,6 @@ import java.io.FileWriter;
 
 
 import javafx.animation.AnimationTimer;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -33,6 +33,7 @@ import javafx.stage.Stage;
 
 import java.util.*;
 import java.lang.Math;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class GameController {
@@ -44,7 +45,7 @@ public class GameController {
     private Scene scene;
     private Player player;
     // variables for scoring systems
-    private int score = 0;
+    private AtomicInteger score = new AtomicInteger(0);
     private String highscore = "";
     List<Bullet> bullets = new ArrayList<>();
     List<Bullet> alienBullets = new ArrayList<>();
@@ -55,6 +56,9 @@ public class GameController {
     private Timer timer;
 
     private LevelController levelController;
+    Label scoreLabel;
+    Label levelLabel;
+    Label lifeLabel;
 
 
     public GameController(Pane pane, Stage stage) {
@@ -80,6 +84,9 @@ public class GameController {
 
 
     public void startGame(){
+        levelController = new LevelController();
+        // add the player entity into the pane
+        addPlayer();
         addCharacters();
         displayGameStats();
         displayMenuButton();
@@ -100,6 +107,7 @@ public class GameController {
             @Override
             public void handle(long nanosec) {
                 handleKeyPressAction(pressedKeys);
+
             }
         }.start();
 
@@ -122,11 +130,7 @@ public class GameController {
     }
 
     public void addCharacters(){
-        // add the player entity into the pane
-        Player player = addPlayer();
-
         //adding test asteroids of all shapes (A)
-        levelController = new LevelController();
         List<GameEntity> enemies =  levelController.addEnemiesBasedOnLevel();
 
         enemies.forEach(enemy ->{
@@ -188,11 +192,14 @@ public class GameController {
         // Move each asteroid
         asteroids.forEach(asteroid -> asteroid.move());
 
+        // Calculate score before asteroids disappear;
+        updateScore();
         // Check collisions for each asteroid
         asteroids.forEach(asteroid -> asteroid.handleCollision(bullets, asteroids, player, pane));
     }
 
     public void alienMovement(long lastTime, long shootingInterval, long now) {
+        List<Bullet> alienBullets = new ArrayList<>();
         for (Alien alien : this.aliens){
             alien.move();
 
@@ -211,26 +218,42 @@ public class GameController {
                     bullet.getEntityShape().setRotate(Math.atan((player.getEntityShape().getTranslateY() - alien.getEntityShape().getTranslateY()) / (player.getEntityShape().getTranslateX() - alien.getEntityShape().getTranslateX())) * 180 / Math.PI + 180);
                 }
 
-                bullets.add(bullet);
+                alienBullets.add(bullet);
                 pane.getChildren().add(bullet.getEntityShape());
 
                 bullet.move();
 
                 if (!isOnScreen(bullet)) {
                     pane.getChildren().remove(bullet.getEntityShape());
-                    bullets.remove(bullet);
+                    alienBullets.remove(bullet);
                 }
-
             } else {
                 removeEntity(alien);
             }
         }
     }
 
-    public void handleCollision() {
+    public void updateScore() {
         this.bullets.forEach(bullet -> {
-            if (bullet.hasCollided(this.player)) {
-                player.decreaseLife();
+            for (Asteroids asteroid : asteroids){
+                if (asteroid.hasCollided(bullet)) {
+                    if (asteroid instanceof LargeAsteroids){
+                        this.scoreLabel.setText("Score: " + score.addAndGet(Points.LARGE_ASTEROID.getPoint()));
+                    } else if (asteroid instanceof MediumAsteroids) {
+                        this.scoreLabel.setText("Score: " + score.addAndGet(Points.MEDIUM_ASTEROID.getPoint()));
+                    } else {
+                        this.scoreLabel.setText("Score: " + score.addAndGet(Points.SMALL_ASTEROID.getPoint()));
+                    }
+                    // Update the level if score goes above a value. Required only when the score gets updated
+                    updateLevel();
+                }
+            }
+            for (Alien alien : aliens){
+                if (bullet.hasCollided(alien)) {
+                    this.scoreLabel.setText("Score: " + score.getAndAdd(Points.ALIEN.getPoint()));
+                    // Update the level if score goes above a value. Required only when the score gets updated
+                    updateLevel();
+                }
             }
         });
 
@@ -241,6 +264,14 @@ public class GameController {
         });
     }
 
+    public void updateLevel(){
+        int newLevel = levelController.newLevel(score.get());
+        if (newLevel != levelController.getLevel()){
+            levelController.setLevel(newLevel);
+            this.levelLabel.setText("Level:" + levelController.getLevel());
+            addCharacters();
+        }
+    }
 
     public Player addPlayer() {
         this.player = new Player();
@@ -267,11 +298,11 @@ public class GameController {
     	
     	System.out.println(highscore);
     	// if highscore is set
-    	if (score > Integer.parseInt((highscore.split(":")[1]))) {
+    	if (score.get() > Integer.parseInt((highscore.split(":")[1]))) {
     		// need javafx box that comes up to input in name
     		// and takes the input as variable into name
     		String name = "";
-    		highscore = name + ":" + score;
+    		highscore = name + ":" + score.get();
     		
     		File scoreFile = new File("highscore.dat");
     		if (!scoreFile.exists()) {
@@ -327,7 +358,7 @@ public class GameController {
     }
 
     private boolean isOnScreen(GameEntity ge) {
-        System.out.println("Character position: (" + ge.getEntityShape().getTranslateX() + ", " + ge.getEntityShape().getTranslateY() + ")");
+//        System.out.println("Character position: (" + ge.getEntityShape().getTranslateX() + ", " + ge.getEntityShape().getTranslateY() + ")");
         if (ge.getEntityShape().getTranslateX() < AsteroidsGame.WIDTH && ge.getEntityShape().getTranslateY() < AsteroidsGame.HEIGHT) {
             return true;
         } else {
@@ -338,9 +369,9 @@ public class GameController {
     private void displayGameStats(){
         int gameStatBegin_X = 20;
         int gameStatBegin_Y = 20;
-        Label scoreLabel = displayScore(gameStatBegin_X, gameStatBegin_Y);
-        Label levelLabel = displayLevel(gameStatBegin_X, scoreLabel.getTranslateY() + 40);
-        Label lifeLabel = displayLife(gameStatBegin_X, levelLabel.getTranslateY() + 40);
+        scoreLabel = displayScore(gameStatBegin_X, gameStatBegin_Y);
+        levelLabel = displayLevel(gameStatBegin_X, scoreLabel.getTranslateY() + 40);
+        lifeLabel = displayLife(gameStatBegin_X, levelLabel.getTranslateY() + 40);
         List<Label> labels = new ArrayList<>();
         labels.add(scoreLabel);
         labels.add(levelLabel);
