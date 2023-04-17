@@ -29,6 +29,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -150,29 +151,11 @@ public class GameController {
         gameOverLabel.setLayoutY(AsteroidsGame.HEIGHT/2 - 200); 
         gameOverLabel.setTextFill(Color.WHITE);
         
-        Label PromptText = new Label("Please Enter your name: ");
-        PromptText.setFont(new Font(30));
-        PromptText.setLayoutX(AsteroidsGame.WIDTH/2 - 150); 
-        PromptText.setLayoutY(AsteroidsGame.HEIGHT/2); 
-        PromptText.setTextFill(Color.WHITE);
         
-        TextField nameInput = new TextField();
-        nameInput.setPromptText("Please Enter your name");
-        nameInput.setLayoutX(AsteroidsGame.WIDTH/2 - 150); 
-        nameInput.setLayoutY(AsteroidsGame.HEIGHT/2 + 60); 
-
-        Button submitButton = new Button("Submit");
-        submitButton.setOnAction(e -> {
-            String playerName = nameInput.getText();
-            // You can save the player's name and score here
-            System.out.println("Player name: " + playerName);
-        });
-        
-        submitButton.setLayoutX(AsteroidsGame.WIDTH/2 + 20); 
-        submitButton.setLayoutY(AsteroidsGame.HEIGHT/2 + 60); 
+       
 
 
-        this.pane.getChildren().addAll(gameOverLabel, PromptText, nameInput, submitButton);
+        this.pane.getChildren().addAll(gameOverLabel);
 
     }
 
@@ -318,7 +301,8 @@ public class GameController {
                 player.decreaseLife();
              // liaoliao add the code below
                 if (this.player.getRemainingLives() <= 0) {
-                    stopGame();
+                	CheckScore();
+              
                 }
             }
         });
@@ -355,67 +339,151 @@ public class GameController {
     
     // someone needs to put this method when the player dies as in if player life less than 0 then call this method
     public void CheckScore() {
-    	
-    	System.out.println(highscore);
+    	highscore = "Anon:0";
     	// if highscore is set
-    	if (score.get() > Integer.parseInt((highscore.split(":")[1]))) {
-    		// need javafx box that comes up to input in name
-    		// and takes the input as variable into name
-    		String name = "";
-    		highscore = name + ":" + score.get();
+    	String[] highscoreParts = highscore.split(":");
+    	if (highscoreParts.length >= 2 && score.get() > Integer.parseInt(highscoreParts[1])) {
     		
-    		File scoreFile = new File("highscore.dat");
-    		if (!scoreFile.exists()) {
-    			try {
-    				scoreFile.createNewFile();
-    			}	catch (IOException e) {
-    				e.printStackTrace();
-    			}
-    		}
-    		FileWriter writeFile = null;
-    		BufferedWriter writer = null;
-    		try {
-    			writeFile = new FileWriter(scoreFile);
-    			writer = new BufferedWriter(writeFile);
-    			writer.write(this.highscore);
-    		}
-    		catch (Exception e) {
-    			//errors if file isnt found
-    		}
-    		finally {
-    			try {
-    				if (writer != null) 
-        				writer.close();
-    			}
-    				catch (Exception e) {}
-    			}
-    		}
+    		
+    		// need javafx box that comes up to input in name
+    		Label gameOverLabel = new Label("Game Over!");
+            gameOverLabel.setFont(new Font(100));
+            gameOverLabel.setLayoutX(AsteroidsGame.WIDTH/2 - 250); 
+            gameOverLabel.setLayoutY(AsteroidsGame.HEIGHT/2 - 200); 
+            gameOverLabel.setTextFill(Color.WHITE);
+            
+            
+            
+            Label PromptText = new Label("Please Enter your name: ");
+            PromptText.setFont(new Font(30));
+            PromptText.setLayoutX(AsteroidsGame.WIDTH/2 - 150); 
+            PromptText.setLayoutY(AsteroidsGame.HEIGHT/2); 
+            PromptText.setTextFill(Color.WHITE);
+            
+            TextField nameInput = new TextField();
+            nameInput.setPromptText("Please Enter your name");
+            nameInput.setLayoutX(AsteroidsGame.WIDTH/2 - 150); 
+            nameInput.setLayoutY(AsteroidsGame.HEIGHT/2 + 60); 
+
+            Button submitButton = new Button("Submit");
+            submitButton.setOnAction(e -> {
+                String playerName = nameInput.getText();
+                // You can save the player's name and score here
+                System.out.println("Player name: " + playerName);
+            });
+            
+            submitButton.setLayoutX(AsteroidsGame.WIDTH/2 + 20); 
+            submitButton.setLayoutY(AsteroidsGame.HEIGHT/2 + 60); 
+            
+            submitButton.setOnAction(e -> {
+                String playerName = nameInput.getText();
+                String newHighScore = playerName + ":" + score.get(); // concatenate player name and score
+                highscore = newHighScore; // update the current highscore
+                System.out.println("Player name: " + playerName);
+                saveHighScore();
+            });
+
+
+            this.pane.getChildren().addAll(gameOverLabel, PromptText, nameInput, submitButton);
+            
+    	}
+    	
+    	else {
+    		
+    		stopGame();
+            
+    	}
     }
+    
+    
+    //saving highscore
+    private void saveHighScore() {
+        //new box
+        File scoreFile = new File("highscore.dat");
+        if (!scoreFile.exists()) {
+            try {
+                scoreFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        FileWriter writeFile = null;
+        BufferedWriter writer = null;
+        try {
+            writeFile = new FileWriter(scoreFile);
+            writer = new BufferedWriter(writeFile);
+            writer.write(highscore);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (writer != null)
+                    writer.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+   
     
     // highscore 
     public String GetHighScore(){
-    	// format: Marc:100
-    	// same directory as class because no slash directory under
-    	FileReader readFile = null;
-    	BufferedReader reader = null;
-    	try {
-    		readFile = new FileReader("highscore.dat");
-    		reader = new BufferedReader(readFile);
-    		return reader.readLine();
-    	}
-    	catch (Exception e) {
-    		return "Anon:0";
-    	}
-    	finally {
-    		try {
-    			if (reader != null)
-    				reader.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    	}
+        // format: Marc:100
+        // same directory as class because no slash directory under
+        FileReader readFile = null;
+        BufferedReader reader = null;
+        try {
+            readFile = new FileReader("highscore.dat");
+            reader = new BufferedReader(readFile);
+            String highScoreLine = reader.readLine();
+            return highScoreLine;
+        }
+        catch (Exception e) {
+            return "Anon:0";
+        }
+        finally {
+            try {
+                if (reader != null)
+                    reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
+
+    public void displayHighScore() {
+        Stage highScoreStage = new Stage();
+        highScoreStage.setTitle("High Scores");
+
+        // Create a label to display the high score
+        Label highScoreLabel = new Label("High Score: " + GetHighScore());
+        highScoreLabel.setFont(new Font(20));
+        highScoreLabel.setLayoutX(10);
+        highScoreLabel.setLayoutY(10);
+
+        // Add the label to a new scene
+        Scene highScoreScene = new Scene(new VBox(highScoreLabel), 300, 100);
+
+        // Set the scene for the new stage
+        highScoreStage.setScene(highScoreScene);
+
+        // Show the new stage
+        highScoreStage.show();
+    }
+    
+    public void resetHighScore() {
+        try {
+            FileWriter writer = new FileWriter("highscore.dat");
+            writer.write("Anon:0");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
+    
+    
 
     private boolean isOnScreen(GameEntity ge) {
 //        System.out.println("Character position: (" + ge.getEntityShape().getTranslateX() + ", " + ge.getEntityShape().getTranslateY() + ")");
