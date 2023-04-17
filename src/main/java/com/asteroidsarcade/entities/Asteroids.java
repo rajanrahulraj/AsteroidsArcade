@@ -13,6 +13,7 @@ public class Asteroids extends GameEntity {
     public int numSplit;
     private double angle;
     public double velocity;
+    public double maxVelocity = 2.0;
 
     public Asteroids(Polygon polygon, double x, double y, double velocity) {
         super(polygon, x, y);
@@ -101,7 +102,9 @@ public class Asteroids extends GameEntity {
     // Check collisions for player
     for (Asteroids asteroid : asteroids) {
         if (asteroid.hasCollided(player)) {
-            player.decreaseLife();
+            
+            System.out.println(player.getRemainingLives());
+            player.decreaseLife(pane);
         }
     }
 }
