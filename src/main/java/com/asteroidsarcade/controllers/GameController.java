@@ -21,7 +21,9 @@ import java.io.FileWriter;
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -54,6 +56,8 @@ public class GameController {
     List<Alien> aliens = new ArrayList<>();
     // variable to shoot every 0.5 seconds
     private Timer timer;
+    private AnimationTimer animationTimer;
+
 
     private LevelController levelController;
     Label scoreLabel;
@@ -101,15 +105,18 @@ public class GameController {
         this.scene.setOnKeyReleased(event -> {
             pressedKeys.put(event.getCode(), Boolean.FALSE);
         });
-        // control the keyboard
-        new AnimationTimer() {
-
+        
+        
+        // liaoliao change the AnimationTimer code here
+//         control the keyboard
+        this.animationTimer = new AnimationTimer() {
             @Override
             public void handle(long nanosec) {
                 handleKeyPressAction(pressedKeys);
-
             }
-        }.start();
+        };
+        this.animationTimer.start();
+
 
 
         AnimationTimer alienAnimation = new AnimationTimer() {
@@ -131,6 +138,42 @@ public class GameController {
             }
         };
         alienAnimation.start();
+    }
+    
+    // liaoliao add the code here
+    public void stopGame() {
+        this.animationTimer.stop();
+        
+        Label gameOverLabel = new Label("Game Over!");
+        gameOverLabel.setFont(new Font(100));
+        gameOverLabel.setLayoutX(AsteroidsGame.WIDTH/2 - 250); 
+        gameOverLabel.setLayoutY(AsteroidsGame.HEIGHT/2 - 200); 
+        gameOverLabel.setTextFill(Color.WHITE);
+        
+        Label PromptText = new Label("Please Enter your name: ");
+        PromptText.setFont(new Font(30));
+        PromptText.setLayoutX(AsteroidsGame.WIDTH/2 - 150); 
+        PromptText.setLayoutY(AsteroidsGame.HEIGHT/2); 
+        PromptText.setTextFill(Color.WHITE);
+        
+        TextField nameInput = new TextField();
+        nameInput.setPromptText("Please Enter your name");
+        nameInput.setLayoutX(AsteroidsGame.WIDTH/2 - 150); 
+        nameInput.setLayoutY(AsteroidsGame.HEIGHT/2 + 60); 
+
+        Button submitButton = new Button("Submit");
+        submitButton.setOnAction(e -> {
+            String playerName = nameInput.getText();
+            // You can save the player's name and score here
+            System.out.println("Player name: " + playerName);
+        });
+        
+        submitButton.setLayoutX(AsteroidsGame.WIDTH/2 + 20); 
+        submitButton.setLayoutY(AsteroidsGame.HEIGHT/2 + 60); 
+
+
+        this.pane.getChildren().addAll(gameOverLabel, PromptText, nameInput, submitButton);
+
     }
 
     public Scene getScene(){
@@ -273,6 +316,10 @@ public class GameController {
         this.asteroids.forEach(asteroid -> {
             if (asteroid.hasCollided(this.player)) {
                 player.decreaseLife();
+             // liaoliao add the code below
+                if (this.player.getRemainingLives() <= 0) {
+                    stopGame();
+                }
             }
         });
     }
