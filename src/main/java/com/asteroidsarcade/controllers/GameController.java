@@ -116,10 +116,18 @@ public class GameController {
             
             private long lastTime = 0;
             private long shootingInterval = 1_000_000_000L;
-            
+
+            @Override
+            public void start() {
+                lastTime = System.nanoTime();
+                super.start();
+            }
             @Override
             public void handle(long now) {
-                alienMovement(lastTime, shootingInterval, now);
+                long elapsedTime = now - lastTime;
+                alienMovement(shootingInterval, elapsedTime);
+                lastTime = now;
+
             }
         };
         alienAnimation.start();
@@ -196,15 +204,21 @@ public class GameController {
         updateScore();
         // Check collisions for each asteroid
         asteroids.forEach(asteroid -> asteroid.handleCollision(bullets, asteroids, player, pane));
+
+        bullets.forEach(bullet -> {
+            if (System.currentTimeMillis() - bullet.getCreatedTime() > 2000){
+                this.pane.getChildren().remove(bullet.getEntityShape());
+                this.bullets.remove(bullet);
+            }
+        });
     }
 
-    public void alienMovement(long lastTime, long shootingInterval, long now) {
+    public void alienMovement(long shootingInterval, long elapsedTime) {
         List<Bullet> alienBullets = new ArrayList<>();
         for (Alien alien : this.aliens){
             alien.move();
 
-            if (isOnScreen(alien) && (now - lastTime >= shootingInterval)) {
-                lastTime = now;
+            if (isOnScreen(alien) && (elapsedTime >= shootingInterval)) {
 
                 Bullet bullet = new Bullet((int) alien.getEntityShape().getTranslateX(),(int) alien.getEntityShape().getTranslateY());
 
@@ -219,14 +233,13 @@ public class GameController {
                 }
 
                 alienBullets.add(bullet);
-                pane.getChildren().add(bullet.getEntityShape());
-
-                bullet.move();
-
-                if (!isOnScreen(bullet)) {
-                    pane.getChildren().remove(bullet.getEntityShape());
-                    alienBullets.remove(bullet);
-                }
+                alienBullets.forEach(shot -> {
+                    pane.getChildren().add(shot.getEntityShape());
+                    if (!isOnScreen(bullet) || (System.currentTimeMillis() - shot.getCreatedTime() > 2000)){
+                        this.pane.getChildren().remove(shot.getEntityShape());
+                        alienBullets.remove(bullet);
+                    }
+                });
             } else {
                 removeEntity(alien);
             }
@@ -267,7 +280,7 @@ public class GameController {
     public void updateLevel(){
         int newLevel = levelController.newLevel(score.get());
         if (newLevel != levelController.getLevel()){
-            levelController.setLevel(newLevel);
+               levelController.setLevel(newLevel);
             this.levelLabel.setText("Level:" + levelController.getLevel());
             addCharacters();
         }
