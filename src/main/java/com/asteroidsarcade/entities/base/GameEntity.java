@@ -76,7 +76,10 @@ public abstract class GameEntity implements Moveable {
         double changeY = Math.sin(Math.toRadians(this.entityShape.getRotate()));
         entityShape.setTranslateX(entityShape.getTranslateX() + changeX);
         entityShape.setTranslateY(entityShape.getTranslateY() + changeY);
+        setEntityWithinScene();
+    }
 
+    public void setEntityWithinScene(){
         // Code below is used to ensure that all entities stay within the screen.
         if (this.entityShape.getTranslateX() < 0) {
             this.entityShape.setTranslateX(this.entityShape.getTranslateX() + AsteroidsGame.WIDTH);

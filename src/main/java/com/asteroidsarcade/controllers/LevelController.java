@@ -43,7 +43,7 @@ public class LevelController {
             int mediumAsteroidsCount = enemyCounts[1] != 0 ? (asteroidsCount < MAX_ASTEROID_COUNT ? enemyCounts[1] * this.getLevel() : enemyCounts[1]) : 1;
             int largeAsteroidsCount = enemyCounts[2] != 0 ? (asteroidsCount < MAX_ASTEROID_COUNT ? enemyCounts[2] * this.getLevel() : enemyCounts[2]) : 1;
             int alienCount = enemyCounts[3] < MAX_ALIEN_COUNT ? enemyCounts[3] + 1 : MAX_ALIEN_COUNT;
-            setEnemyCounts(new int[] {largeAsteroidsCount, mediumAsteroidsCount, smallAsteroidsCount, alienCount});
+            setEnemyCounts(new int[] {smallAsteroidsCount, mediumAsteroidsCount, largeAsteroidsCount, alienCount});
             gameCharacters.addAll(addAsteroids(smallAsteroidsCount, mediumAsteroidsCount, largeAsteroidsCount));
             gameCharacters.addAll(addAlien(alienCount));
         }

@@ -58,7 +58,7 @@ public class Alien extends SpaceShip {
 
         this.entityShape.setTranslateX(this.entityShape.getTranslateX() + this.velocity * Math.cos(angle));
         this.entityShape.setTranslateY(this.entityShape.getTranslateY() + this.velocity * Math.sin(angle));
-
+        super.setEntityWithinScene();
     }
 
 }

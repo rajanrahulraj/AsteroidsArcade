@@ -21,10 +21,7 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SceneController{
-    private Pane pane;
-    private Stage stage;
-    private Scene scene;
+public class SceneController extends GeneralController{
     private SceneController sceneController;
 
     List<GameButton> menuButtons;
@@ -107,9 +104,6 @@ public class SceneController{
         });
     }
 
-    
-    
-    
     private void createScoresButton(){
     	   GameButton scoreButton = new GameButton("HIGH SCORES");
     	   AddMenuButtons(scoreButton);
@@ -117,8 +111,9 @@ public class SceneController{
 	    	scoreButton.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
 	            public void handle(ActionEvent event) {
-	                GameController gameController = new GameController(pane, stage);
-	                gameController.displayHighScore();
+	                ScorecardController scorecardController = new ScorecardController(pane, stage);
+                    scorecardController.displayScoreCard();
+                    scorecardController.displayMenuButton();
 	            }
 	        });
     	}

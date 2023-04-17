@@ -103,7 +103,7 @@ public class Asteroids extends GameEntity {
     for (Asteroids asteroid : asteroids) {
         if (asteroid.hasCollided(player)) {
             
-            System.out.println(player.getRemainingLives());
+//            System.out.println(player.getRemainingLives());
             player.decreaseLife();
         }
     }

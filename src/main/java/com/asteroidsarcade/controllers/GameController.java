@@ -3,6 +3,7 @@ package com.asteroidsarcade.controllers;
 import com.asteroidsarcade.components.GeneralButton;
 import com.asteroidsarcade.entities.*;
 import com.asteroidsarcade.entities.base.GameEntity;
+import com.asteroidsarcade.entities.base.GameScore;
 import com.asteroidsarcade.main.AsteroidsGame;
 import static com.asteroidsarcade.config.AppConstants.*;
 
@@ -19,7 +20,9 @@ import java.io.FileWriter;
 
 
 import javafx.animation.AnimationTimer;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -31,6 +34,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -39,13 +43,9 @@ import java.lang.Math;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class GameController {
+public class GameController extends GeneralController{
 
-    private Pane pane;
-    private Pane homePane;
-    private Stage stage;
-    private Stage homeStage;
-    private Scene scene;
+
     private Player player;
     // variables for scoring systems
     private AtomicInteger score = new AtomicInteger(0);
@@ -114,6 +114,7 @@ public class GameController {
             @Override
             public void handle(long nanosec) {
                 handleKeyPressAction(pressedKeys);
+                updateCharactersOnScreen();
             }
         };
         this.animationTimer.start();
@@ -176,6 +177,28 @@ public class GameController {
             this.pane.getChildren().add(enemy.getEntityShape());
         });
     }
+
+    public void clearCharacters(){
+        ObservableList<Node> children = this.pane.getChildren();
+        children.removeIf(child -> child instanceof Polygon && child != this.player.getEntityShape());
+//        for (Node child : children){
+//            if (){
+//                this.pane.getChildren().remove(child);
+//            }
+//        }
+        this.asteroids.clear();
+        this.aliens.clear();
+        this.bullets.clear();
+    }
+
+
+    private void updateCharactersOnScreen() {
+        int[] enemyCounts = levelController.getEnemyCounts();
+        if (this.asteroids.stream().filter(asteroid->asteroid instanceof SmallAsteroids).count() < enemyCounts[0]){
+
+        }
+    }
+
     // liao add the hyperspaceKeyPressed variable here, to set the H key press just once a time.
     private boolean hyperspaceKeyPressed = false;
     public void handleKeyPressAction(Map<KeyCode, Boolean> pressedKeys){
@@ -205,7 +228,8 @@ public class GameController {
 
         // press space to shoot
         if (pressedKeys.getOrDefault(KeyCode.SPACE, false)){
-        	if (player.getIsUncollisionable()) {
+        	if (player.getIsUncollisionable() || this.bullets.size() >= MAX_BULLET_FREQUENCY) {
+                pressedKeys.remove(KeyCode.SPACE);
                 return; // do nothing if player is invisible
             }
             // When shooting the bullet in the same direction as the ship
@@ -232,7 +256,7 @@ public class GameController {
         asteroids.forEach(asteroid -> asteroid.handleCollision(bullets, asteroids, player, pane));
 
         bullets.forEach(bullet -> {
-            if (System.currentTimeMillis() - bullet.getCreatedTime() > 2000){
+            if (System.currentTimeMillis() - bullet.getCreatedTime() > BULLET_LIFE_TIME){
                 this.pane.getChildren().remove(bullet.getEntityShape());
                 this.bullets.remove(bullet);
             }
@@ -257,19 +281,14 @@ public class GameController {
                 else if(player.getEntityShape().getTranslateX() < alien.getEntityShape().getTranslateX()){
                     bullet.getEntityShape().setRotate(Math.atan((player.getEntityShape().getTranslateY() - alien.getEntityShape().getTranslateY()) / (player.getEntityShape().getTranslateX() - alien.getEntityShape().getTranslateX())) * 180 / Math.PI + 180);
                 }
-
+                bullet.move();
+                this.pane.getChildren().add(bullet.getEntityShape());
                 alienBullets.add(bullet);
-                alienBullets.forEach(shot -> {
-                    pane.getChildren().add(shot.getEntityShape());
-                    if (!isOnScreen(bullet) || (System.currentTimeMillis() - shot.getCreatedTime() > 2000)){
-                        this.pane.getChildren().remove(shot.getEntityShape());
-                        alienBullets.remove(bullet);
-                    }
-                });
-            } else {
-                removeEntity(alien);
             }
         }
+        alienBullets.forEach(shot -> shot.move());
+        alienBullets.removeIf(shot->!isOnScreen(shot));
+
     }
 
     public void updateScore() {
@@ -299,10 +318,10 @@ public class GameController {
         this.asteroids.forEach(asteroid -> {
             if (asteroid.hasCollided(this.player)) {
                 player.decreaseLife();
+                this.lifeLabel.setText("Life:" + this.player.getRemainingLives());
              // liaoliao add the code below
                 if (this.player.getRemainingLives() <= 0) {
                 	CheckScore();
-              
                 }
             }
         });
@@ -311,8 +330,10 @@ public class GameController {
     public void updateLevel(){
         int newLevel = levelController.newLevel(score.get());
         if (newLevel != levelController.getLevel()){
-               levelController.setLevel(newLevel);
+             levelController.setLevel(newLevel);
             this.levelLabel.setText("Level:" + levelController.getLevel());
+            // clear all characters on screen before proceeding to next level
+            clearCharacters();
             addCharacters();
         }
     }
@@ -361,18 +382,14 @@ public class GameController {
             PromptText.setTextFill(Color.WHITE);
             
             TextField nameInput = new TextField();
+            nameInput.setFont(new Font(20));
             nameInput.setPromptText("Please Enter your name");
-            nameInput.setLayoutX(AsteroidsGame.WIDTH/2 - 150); 
+            nameInput.setLayoutX(AsteroidsGame.WIDTH/2 - 200);
             nameInput.setLayoutY(AsteroidsGame.HEIGHT/2 + 60); 
 
-            Button submitButton = new Button("Submit");
-            submitButton.setOnAction(e -> {
-                String playerName = nameInput.getText();
-                // You can save the player's name and score here
-                System.out.println("Player name: " + playerName);
-            });
+            GeneralButton submitButton = new GeneralButton("Save");
             
-            submitButton.setLayoutX(AsteroidsGame.WIDTH/2 + 20); 
+            submitButton.setLayoutX(AsteroidsGame.WIDTH/2 + 40);
             submitButton.setLayoutY(AsteroidsGame.HEIGHT/2 + 60); 
             
             submitButton.setOnAction(e -> {
@@ -381,17 +398,15 @@ public class GameController {
                 highscore = newHighScore; // update the current highscore
                 System.out.println("Player name: " + playerName);
                 saveHighScore();
+                AsteroidsGame.sceneController.toggleStageView(stage, homeStage);
             });
 
 
             this.pane.getChildren().addAll(gameOverLabel, PromptText, nameInput, submitButton);
             
     	}
-    	
     	else {
-    		
     		stopGame();
-            
     	}
     }
     
@@ -410,9 +425,10 @@ public class GameController {
         FileWriter writeFile = null;
         BufferedWriter writer = null;
         try {
-            writeFile = new FileWriter(scoreFile);
+            writeFile = new FileWriter(scoreFile, true);
             writer = new BufferedWriter(writeFile);
             writer.write(highscore);
+            writer.write(System.lineSeparator());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -424,52 +440,27 @@ public class GameController {
             }
         }
     }
-   
-    
-    // highscore 
-    public String GetHighScore(){
-        // format: Marc:100
-        // same directory as class because no slash directory under
-        FileReader readFile = null;
-        BufferedReader reader = null;
-        try {
-            readFile = new FileReader("highscore.dat");
-            reader = new BufferedReader(readFile);
-            String highScoreLine = reader.readLine();
-            return highScoreLine;
-        }
-        catch (Exception e) {
-            return "Anon:0";
-        }
-        finally {
-            try {
-                if (reader != null)
-                    reader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
-    public void displayHighScore() {
-        Stage highScoreStage = new Stage();
-        highScoreStage.setTitle("High Scores");
 
-        // Create a label to display the high score
-        Label highScoreLabel = new Label("High Score: " + GetHighScore());
-        highScoreLabel.setFont(new Font(20));
-        highScoreLabel.setLayoutX(10);
-        highScoreLabel.setLayoutY(10);
-
-        // Add the label to a new scene
-        Scene highScoreScene = new Scene(new VBox(highScoreLabel), 300, 100);
-
-        // Set the scene for the new stage
-        highScoreStage.setScene(highScoreScene);
-
-        // Show the new stage
-        highScoreStage.show();
-    }
+//    public void displayHighScore() {
+//        Stage highScoreStage = new Stage();
+//        highScoreStage.setTitle("High Scores");
+//
+//        // Create a label to display the high score
+//        Label highScoreLabel = new Label("High Score: " + GetHighScore());
+//        highScoreLabel.setFont(new Font(20));
+//        highScoreLabel.setLayoutX(10);
+//        highScoreLabel.setLayoutY(10);
+//
+//        // Add the label to a new scene
+//        Scene highScoreScene = new Scene(new VBox(highScoreLabel), 300, 100);
+//
+//        // Set the scene for the new stage
+//        highScoreStage.setScene(highScoreScene);
+//
+//        // Show the new stage
+//        highScoreStage.show();
+//    }
     
     public void resetHighScore() {
         try {
@@ -480,11 +471,6 @@ public class GameController {
             e.printStackTrace();
         }
     }
-    
-    
-    
-    
-
     private boolean isOnScreen(GameEntity ge) {
 //        System.out.println("Character position: (" + ge.getEntityShape().getTranslateX() + ", " + ge.getEntityShape().getTranslateY() + ")");
         if (ge.getEntityShape().getTranslateX() < AsteroidsGame.WIDTH && ge.getEntityShape().getTranslateY() < AsteroidsGame.HEIGHT) {
@@ -534,18 +520,4 @@ public class GameController {
         return lifeLabel;
     }
 
-    private void displayMenuButton(){
-        GeneralButton mainMenuButton = new GeneralButton("Main Menu");
-        mainMenuButton.setLayoutX(AsteroidsGame.WIDTH - 170);
-        mainMenuButton.setLayoutY(20);
-        this.pane.getChildren().add(mainMenuButton);
-        mainMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-//                TODO: save score when user navigates to main menu.
-                AsteroidsGame.sceneController.toggleStageView(stage, homeStage);
-//                stage.close();
-            }
-        });
-    }
 }
