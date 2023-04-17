@@ -30,7 +30,8 @@ public class Alien extends SpaceShip {
     private int shootDelay;// milliseconds
     private int shootCounter;
     private int size;
-    List<Bullet> bullets = new ArrayList<>();
+    private int velocity;
+    private double angle;
 
     public Alien() {
 
@@ -41,8 +42,10 @@ public class Alien extends SpaceShip {
         this.entityShape.setTranslateX(0);
         this.entityShape.setTranslateY(600 * Math.random());
 
-        this.velocityX = 1;//Temporary parameters
-        this.velocityY = 0;//Temporary parameters
+        // this.velocityX = 1;//Temporary parameters
+        // this.velocityY = 0;//Temporary parameters
+        this.velocity = 1;
+        this.angle = Math.random() * 2 * Math.PI;
 
         this.size = 30;
         this.shootDelay = 50;
@@ -53,10 +56,9 @@ public class Alien extends SpaceShip {
     @Override
     public void move() {
 
-        this.entityShape.setTranslateX(this.entityShape.getTranslateX() + this.velocityX);
-        this.entityShape.setTranslateY(this.entityShape.getTranslateY() + this.velocityY);
+        this.entityShape.setTranslateX(this.entityShape.getTranslateX() + this.velocity * Math.cos(angle));
+        this.entityShape.setTranslateY(this.entityShape.getTranslateY() + this.velocity * Math.sin(angle));
 
     }
-
 
 }
