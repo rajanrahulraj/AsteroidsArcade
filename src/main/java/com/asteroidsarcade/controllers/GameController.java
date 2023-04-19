@@ -307,6 +307,16 @@ public class GameController extends GeneralController {
                 }
             }
         });
+
+        this.alienBullets.forEach(bullet -> {
+            if (bullet.hasCollided(this.player)) {
+                player.decreaseLife();
+                this.lifeLabel.setText("Life:" + this.player.getRemainingLives());
+                if (this.player.getRemainingLives() <= 0) {
+                    CheckScore();
+                }
+            }
+        });
     }
 
     public void updateLevel() {
