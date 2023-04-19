@@ -1,4 +1,4 @@
-module com.asteroidsarcade {
+module com.example.asteroidsarcade {
     requires javafx.controls;
     requires javafx.fxml;
 

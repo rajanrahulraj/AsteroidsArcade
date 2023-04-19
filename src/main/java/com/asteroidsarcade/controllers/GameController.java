@@ -52,6 +52,8 @@ public class GameController extends GeneralController {
     // variable to shoot every 0.5 seconds
     private Timer timer;
     private AnimationTimer animationTimer;
+    private AnimationTimer alienAnimation;
+    
 
     private LevelController levelController;
     Label scoreLabel;
@@ -108,7 +110,7 @@ public class GameController extends GeneralController {
         };
         this.animationTimer.start();
 
-        AnimationTimer alienAnimation = new AnimationTimer() {
+        this.alienAnimation = new AnimationTimer() {
 
 
             public void handle(long now) {
@@ -122,6 +124,7 @@ public class GameController extends GeneralController {
     // liaoliao add the code here
     public void stopGame() {
         this.animationTimer.stop();
+        this.alienAnimation.stop();
 
         Label gameOverLabel = new Label("Game Over!");
         gameOverLabel.setFont(new Font(100));
@@ -351,6 +354,7 @@ public class GameController extends GeneralController {
     // someone needs to put this method when the player dies as in if player life
     // less than 0 then call this method
     public void CheckScore() {
+    	stopGame();
         highscore = "Anon:0";
         // if highscore is set
         String[] highscoreParts = highscore.split(":");
@@ -377,7 +381,7 @@ public class GameController extends GeneralController {
 
             GeneralButton submitButton = new GeneralButton("Save");
 
-            submitButton.setLayoutX(AsteroidsGame.WIDTH / 2 + 40);
+            submitButton.setLayoutX(AsteroidsGame.WIDTH / 2 + 60);
             submitButton.setLayoutY(AsteroidsGame.HEIGHT / 2 + 60);
 
             submitButton.setOnAction(e -> {
