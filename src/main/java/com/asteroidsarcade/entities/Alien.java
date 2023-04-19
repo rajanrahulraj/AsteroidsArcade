@@ -27,9 +27,6 @@ import java.util.Random;
 //7. Alien will disappear permanently when it exits the screen.
 public class Alien extends SpaceShip {
 
-    private int shootDelay;// milliseconds
-    private int shootCounter;
-    private int size;
     private int velocity;
     private double angle;
 
@@ -37,19 +34,14 @@ public class Alien extends SpaceShip {
 
         super();
 
-        this.entityShape = new Polygon(0, 0, 0, 7, -5, 15, 15, 15, 10, 7, 10, 0);
+        this.entityShape = new Polygon(0, 0, 0, 8, -10, 20, 20, 20, 10, 8, 10, 0);
 
         this.entityShape.setTranslateX(0);
         this.entityShape.setTranslateY(600 * Math.random());
 
-        // this.velocityX = 1;//Temporary parameters
-        // this.velocityY = 0;//Temporary parameters
         this.velocity = 1;
         this.angle = Math.random() * 2 * Math.PI;
 
-        this.size = 30;
-        this.shootDelay = 50;
-        this.shootCounter = 0;
 
     }
 
