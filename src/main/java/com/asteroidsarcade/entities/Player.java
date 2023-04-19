@@ -13,6 +13,18 @@ import javafx.animation.Timeline;
 import javafx.util.Duration;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
+import java.util.ArrayList;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+
+import javafx.animation.PathTransition;
+import javafx.animation.TranslateTransition;
+import javafx.animation.PauseTransition;
+import javafx.animation.FadeTransition;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.Path;
 
 
 // code below write by liaoliao
@@ -98,7 +110,7 @@ public class Player extends SpaceShip{
                 }
             } while (collided);
 
-            invisibility(Duration.seconds(3));
+            invisibility(Duration.seconds(3), Color.WHITE);
             this.remainHyperspaceJump -= 1;
         }
     }
@@ -116,24 +128,23 @@ public class Player extends SpaceShip{
     
 
     public void decreaseLife() {
-    if (!isUncollisionable) {
-        this.remainingLives--;
-        isUncollisionable = true;
-
-        if (this.remainingLives <= 0) {
-            // handle game over
-        } else {
-            // move player to center of screen
-            entityShape.setTranslateX(AsteroidsGame.WIDTH / 2);
-            entityShape.setTranslateY(AsteroidsGame.HEIGHT / 2);
-
-            // make player invisible for 3 seconds
-            invisibility(Duration.seconds(3));
+        if (!isUncollisionable) {
+            this.remainingLives--;
+            dyingAnimation();
+            // make player transparent for 3 seconds
+            invisibility(Duration.seconds(3), Color.TRANSPARENT);
+            // pause for 3 seconds
+            PauseTransition pause = new PauseTransition(Duration.seconds(3));
+            pause.setOnFinished(event -> {
+                // move player to center of screen
+                entityShape.setTranslateX(AsteroidsGame.WIDTH / 2);
+                entityShape.setTranslateY(AsteroidsGame.HEIGHT / 2);
+                // make player white for 3 seconds
+                invisibility(Duration.seconds(3), Color.WHITE);
+            });
+            pause.play();
         }
-    } else {
-        entityShape.setFill(Color.WHITE); // set fill color to white
     }
-}
 
     public boolean getIsUncollisionable() {
         return isUncollisionable;
@@ -142,17 +153,74 @@ public class Player extends SpaceShip{
     public void setIsUncollisionable(boolean value) {
         isUncollisionable = value;
     }
+
     //written by Anastasiia
-    private void invisibility(Duration duration) {
-        entityShape.setFill(Color.WHITE); // set fill color to white
+    private void invisibility(Duration duration, Color color) {
+        entityShape.setFill(color); // set fill color 
+        isUncollisionable = true;
         Timeline timeline = new Timeline(new KeyFrame(duration, e -> {
             isUncollisionable = false;
             entityShape.setFill(Color.BLACK); // restore original fill color
         }));
-        timeline.play();
+
+    timeline.play();
+}
+
+    public void dyingAnimation() { 
+    // create sticks and dots
+    List<Shape> shapes = new ArrayList<>();
+    Pane parent = (Pane) entityShape.getParent();
+    double playerX = entityShape.getTranslateX();
+    double playerY = entityShape.getTranslateY();
+    double stickLength = 20;
+    for (int i = 0; i < 4; i++) {
+        double angle = Math.random() * 2 * Math.PI;
+        double xOffset = stickLength * Math.cos(angle);
+        double yOffset = stickLength * Math.sin(angle);
+        Line stick = new Line(playerX, playerY, playerX + xOffset, playerY + yOffset);
+        stick.setStroke(Color.BLUE);
+        stick.setStrokeWidth(2);
+        shapes.add(stick);
+
+        // create animation for stick
+        Path path = new Path();
+        path.getElements().add(new MoveTo(playerX, playerY));
+        path.getElements().add(new LineTo(playerX + xOffset, playerY + yOffset));
+        PathTransition pathTransition = new PathTransition(Duration.seconds(2.5), path, stick);
+
+        pathTransition.play();
+    }
+    for (int i = 0; i < 5; i++) {
+        Circle dot = new Circle(playerX, playerY, 2);
+        dot.setFill(Color.BLUE);
+        shapes.add(dot);
+
+        // create animation for dot
+        double angle = Math.random() * 2 * Math.PI;
+        double distance = Math.random() * 30;
+        TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(2.5), dot);
+        translateTransition.setByX(distance * Math.cos(angle));
+        translateTransition.setByY(distance * Math.sin(angle));
+
+        translateTransition.play();
     }
 
-    public void increaseScore() {
-        //
+    // add shapes to entity shape's parent
+    shapes.forEach(shape -> parent.getChildren().add(shape));
+
+    // create timeline to remove shapes after duration
+    Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2.5), e -> {
+        shapes.forEach(shape -> {
+            FadeTransition fadeTransition = new FadeTransition(Duration.seconds(0.5), shape);
+            fadeTransition.setFromValue(1);
+            fadeTransition.setToValue(0);
+            fadeTransition.setOnFinished(event2 -> {
+                parent.getChildren().remove(shape);
+            });
+            fadeTransition.play();
+            });
+        }));
+
+        timeline.play();
     }
 }
