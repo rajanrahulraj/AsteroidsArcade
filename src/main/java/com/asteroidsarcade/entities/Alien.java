@@ -47,9 +47,9 @@ public class Alien extends SpaceShip {
         this.velocity = 1;
         this.angle = Math.random() * 2 * Math.PI;
 
-        this.size = 30;
-        this.shootDelay = 50;
-        this.shootCounter = 0;
+        // this.size = 30;
+        // this.shootDelay = 50;
+        // this.shootCounter = 0;
 
     }
 
