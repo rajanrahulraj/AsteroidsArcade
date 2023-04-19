@@ -124,18 +124,18 @@ public class GameController extends GeneralController{
         AnimationTimer alienAnimation = new AnimationTimer() {
             
             private long lastTime = 0;
-            private long shootingInterval = 1_000_000_000L;
+            private long shootingInterval = 1_000_000_000L;// shoot every 1 second
 
-            @Override
-            public void start() {
-                lastTime = System.nanoTime();
-                super.start();
-            }
-            @Override
+            // @Override
+            // public void start() {
+            //     lastTime = System.nanoTime();
+            //     super.start();
+            // }
+            // @Override
             public void handle(long now) {
-                long elapsedTime = now - lastTime;
-                alienMovement(shootingInterval, elapsedTime);
-                lastTime = now;
+                // long elapsedTime = now - lastTime;
+                alienMovement(now,lastTime);
+                
 
             }
         };
@@ -263,13 +263,11 @@ public class GameController extends GeneralController{
         });
     }
 
-    public void alienMovement(long shootingInterval, long elapsedTime) {
-        List<Bullet> alienBullets = new ArrayList<>();
+    public void alienMovement(long now, long lastTime) {
         for (Alien alien : this.aliens){
-            alien.move();
+            if (isOnScreen(alien) && (now-lastTime >= 1_000_000_000L)) {
 
-            if (isOnScreen(alien) && (elapsedTime >= shootingInterval)) {
-
+                lastTime = now;
                 Bullet bullet = new Bullet((int) alien.getEntityShape().getTranslateX(),(int) alien.getEntityShape().getTranslateY());
 
                 if (player.getEntityShape().getTranslateX() == alien.getEntityShape().getTranslateX()){
@@ -281,14 +279,15 @@ public class GameController extends GeneralController{
                 else if(player.getEntityShape().getTranslateX() < alien.getEntityShape().getTranslateX()){
                     bullet.getEntityShape().setRotate(Math.atan((player.getEntityShape().getTranslateY() - alien.getEntityShape().getTranslateY()) / (player.getEntityShape().getTranslateX() - alien.getEntityShape().getTranslateX())) * 180 / Math.PI + 180);
                 }
-                bullet.move();
-                this.pane.getChildren().add(bullet.getEntityShape());
+
                 alienBullets.add(bullet);
+                // bullet.move();
+                this.pane.getChildren().add(bullet.getEntityShape());
             }
         }
         alienBullets.forEach(shot -> shot.move());
         alienBullets.removeIf(shot->!isOnScreen(shot));
-
+        aliens.forEach(obj -> obj.move());
     }
 
     public void updateScore() {
