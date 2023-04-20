@@ -5,15 +5,12 @@ import javafx.geometry.Point2D;
 import javafx.scene.shape.Polygon;
 import java.util.List;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 
 public class Asteroids extends GameEntity {
 
-    public Point2D location;
-    public int numSplit;
+    private Point2D location;
     private double angle;
-    public double velocity;
-    public double maxVelocity = 2.0;
+    private double velocity;
 
     public Asteroids(Polygon polygon, double x, double y, double velocity) {
         super(polygon, x, y);
@@ -70,8 +67,6 @@ public class Asteroids extends GameEntity {
                     MediumAsteroids newAsteroid2 = new MediumAsteroids(asteroid.location.getX(), asteroid.location.getY(), velocity);
                     asteroids.add(newAsteroid1);
                     asteroids.add(newAsteroid2);
-                    newAsteroid1.getEntityShape().setFill(Color.BLUE); // Set fill color of new asteroid 1 to blue
-                    newAsteroid2.getEntityShape().setFill(Color.BLUE); // Set fill color of new asteroid 2 to blue
                     newAsteroid1.setAngle(Math.random() * 360);
                     newAsteroid2.setAngle(Math.random() * 360);
                     pane.getChildren().add(newAsteroid1.getEntityShape());
@@ -83,8 +78,6 @@ public class Asteroids extends GameEntity {
                     SmallAsteroids newAsteroid2 = new SmallAsteroids(asteroid.location.getX(), asteroid.location.getY(), velocity);
                     asteroids.add(newAsteroid1);
                     asteroids.add(newAsteroid2);
-                    newAsteroid1.getEntityShape().setFill(Color.BLUE); // Set fill color of new asteroid 1 to blue
-                    newAsteroid2.getEntityShape().setFill(Color.BLUE); // Set fill color of new asteroid 2 to blue
                     newAsteroid1.setAngle(Math.random() * 360);
                     newAsteroid2.setAngle(Math.random() * 360);
                     pane.getChildren().add(newAsteroid1.getEntityShape());
@@ -102,8 +95,6 @@ public class Asteroids extends GameEntity {
     // Check collisions for player
     for (Asteroids asteroid : asteroids) {
         if (asteroid.hasCollided(player)) {
-            
-//            System.out.println(player.getRemainingLives());
             player.decreaseLife();
         }
     }
