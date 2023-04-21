@@ -38,6 +38,7 @@ import java.util.*;
 import java.lang.Math;
 import java.util.concurrent.atomic.AtomicInteger;
 
+
 public class GameController extends GeneralController {
 
     private Player player;
@@ -452,9 +453,9 @@ public class GameController extends GeneralController {
 
     public void resetHighScore() {
         try {
-            FileWriter writer = new FileWriter("highscore.dat");
-            writer.write("Anon:0");
+            FileWriter writer = new FileWriter("highscore.dat", false);
             writer.close();
+            AsteroidsGame.sceneController.toggleStageView(stage, homeStage);
         } catch (IOException e) {
             e.printStackTrace();
         }
