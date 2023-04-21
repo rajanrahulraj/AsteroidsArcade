@@ -115,7 +115,13 @@ public class ScorecardController extends GeneralController{
     private ObservableList<GameScore> getScoreData() {
         ObservableList<GameScore> gameScores = FXCollections.observableArrayList();
         List<GameScore> scores = getScoreCard();
-        Collections.sort(scores);
+        if(scores != null && scores.size()> 0){
+            Collections.sort(scores);
+        } else{
+            scores = new ArrayList<>();
+            scores.add(new GameScore("-", 0));
+        }
+
         gameScores.addAll(scores);
         return  gameScores;
     }
